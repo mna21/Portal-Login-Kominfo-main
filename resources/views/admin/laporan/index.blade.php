@@ -1,0 +1,179 @@
+
+@extends('admin.admin')
+
+@section('main-content')
+
+<div class="row">
+    <div class="col-xl-12 mb-4">
+        <div class="card shadow-lg h-100 py-2" style="border-radius: 15px;">
+            <div class="card-body" style="border-radius: 15px;">
+                <div class="card-header py-3">
+                    <h5 class="font-weight-bold text-primary">AKUMULASI DASAWISMA KABUPATEN JEPARA</h5>
+                </div>
+                
+                <div class="table-responsive" style="overflow-x: auto; overflow-y: hidden;">
+                    <table class="table table-bordered table-striped table-hover shadow" style="border-radius: 15px;">
+                        <thead class="bg-primary text-white">
+                            <tr>
+                                <th rowspan="2" class="text-center align-middle">No</th>
+                                <th rowspan="2" class="align-middle text-center">Kecamatan</th>
+                                <th rowspan="2" class="align-middle text-center">JML KK</th>
+                                <!--<th rowspan="2" class="align-middle">Jumlah KK</th>-->
+                                <th colspan="9" class="highlight-yellow text-center align-middle">Jumlah Anggota Keluarga</th>
+                                <th colspan="7" class="highlight-orange text-center align-middle">Kriteria Rumah</th>
+                                <th colspan="3" class="highlight-green text-center align-middle">Sumber Air Keluarga</th>
+                                <th colspan="2" class="highlight-gray text-center align-middle">Makanan Pokok</th>
+                                <th colspan="4" class="align-middle text-center">Warga Mengikuti Kegiatan</th>
+                                <th rowspan="2" class="text-center align-middle">Aksi</th>
+                                <!--<th rowspan="2" class="text-center align-middle">Keterangan</th>  Menggunakan rowspan dan align center -->
+                            </tr>
+                            <tr>
+                                <!--Anggota Keluarga-->
+                                <th>Total Balita</th>
+                                <th>PUS</th>
+                                <th>WUS</th>
+                                <th>Ibu Hamil</th>
+                                <th>Ibu Menyusui</th>
+                                <th>Lansia</th>
+                                <th>Buta Baca</th>
+                                <th>Buta Tulis</th>
+                                <th>Buta Hitung</th>
+            
+                                <!--Kriteria Rumah-->
+                                <th>Layak Huni</th>
+                                <th>Tidak Layak Huni</th>
+                                <th>Memiliki Tempat Pembuangan Sampah</th>
+                                <th>Saluran Limbah</th>
+                                <th>Memiliki Jamban Keluarga</th>
+                                <th>Jumlah Jamban Keluarga</th>
+                                <th>Memiliki Stiker P4K</th>
+            
+            
+                                <th>PDAM</th>
+                                <th>Sumur</th>
+                                <th>Sumber Air Keluarga Lain</th>
+            
+                                <th>Beras</th>
+                                <th>Non Beras</th>
+            
+                                <th>Akifitas UP2K</th>
+                                <th>Aktifitas UP2K Lain</th>
+                                <th>Tabungan</th>
+                                <th>Aktifitas Usaha Kesehatan Lingkungan</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($dataPerKecamatan as $index => $data)
+                            
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $data->nama_kec }}</td>  <!-- Display nama_kec -->
+                                <td>{{ $data->jumlah_kepala_keluarga }}</td>
+                                <td>{{ $data->total_balita }}</td>
+                                <td>{{ $data->total_pus }}</td>
+                                <td>{{ $data->total_wus }}</td>
+                                <td>{{ $data->total_ibu_hamil }}</td>
+                                <td>{{ $data->total_ibu_menyusui }}</td>
+                                <td>{{ $data->total_lansia }}</td>
+                                <td>{{ $data->total_buta_baca }}</td>
+                                <td>{{ $data->total_buta_tulis }}</td>
+                                <td>{{ $data->total_buta_hitung }}</td>
+
+                                <td>{{ $data->jumlah_layak_huni }}</td>
+                                <td>{{ $data->jumlah_tidak_layak_huni }}</td>
+                                <td>{{ $data->total_tempat_sampah_keluarga }}</td>
+                                <td>{{ $data->total_saluran_air_limbah }}</td>
+                                <td>{{ $data->total_jamban_keluarga }}</td>
+                                <td>{{ $data->total_jamban_keluarga_jumlah }}</td>
+                                <td>{{ $data->total_stiker_p4k }}</td>
+
+                                <td>{{ $data->jumlah_pdam }}</td>
+                                <td>{{ $data->jumlah_sumur }}</td>
+                                <td>{{ $data->jumlah_sumber_air_lain }}</td>
+
+                                <td>{{ $data->jumlah_makanan_pokok }}</td>
+                                <td>{{ $data->jumlah_makanan_pokok_lain }}</td>
+
+                                <td>{{ $data->total_aktivitas_up2k }}</td>
+                                <td>{{ $data->jumlah_aktivitas_up2k_lain }}</td>
+                                <td>{{ $data->total_memiliki_tabungan }}</td>
+                                <td>{{ $data->total_aktivitas_usaha_kesehatan_lingkungan }}</td>
+                                
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <!-- Tombol Laporan -->
+                                        <a href="{{ route('admin.laporan.desa.index', [
+                                            'no_kec' => $data->no_kec, 
+                                            'no_kab' => $data->no_kab, 
+                                            'no_prop' => $data->no_prop
+                                        ]) }}" class="btn btn-primary btn-sm">Laporan</a>
+                        
+                                        <!-- Tombol Statistik -->
+                                        <a href="{{ route('admin.laporan.desa.statistikkecamatan', [
+                                            'no_kec' => $data->no_kec, 
+                                            'no_kab' => $data->no_kab, 
+                                            'no_prop' => $data->no_prop
+                                        ]) }}" class="btn btn-danger btn-sm">Statistik</a>
+                                    </div>
+                                </td>             
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot class="bg-primary text-white">
+                            <tr class="text-center align-middle">
+                                <th colspan="2" class="text-center align-middle">TOTAL</th>
+                                <td>{{ $totalKeseluruhan->jumlah_kepala_keluarga }}</td>
+                                <td>{{ $totalKeseluruhan->total_balita }}</td>
+                                <td>{{ $totalKeseluruhan->total_pus }}</td>
+                                <td>{{ $totalKeseluruhan->total_wus }}</td>
+                                <td>{{ $totalKeseluruhan->total_ibu_hamil }}</td>
+                                <td>{{ $totalKeseluruhan->total_ibu_menyusui }}</td>
+                                <td>{{ $totalKeseluruhan->total_lansia }}</td>
+                                <td>{{ $totalKeseluruhan->total_buta_baca }}</td>
+                                <td>{{ $totalKeseluruhan->total_buta_tulis }}</td>
+                                <td>{{ $totalKeseluruhan->total_buta_hitung }}</td>
+
+                                <td>{{ $totalKeseluruhan->jumlah_layak_huni }}</td>
+                                <td>{{ $totalKeseluruhan->jumlah_tidak_layak_huni }}</td>
+                                <td>{{ $totalKeseluruhan->total_tempat_sampah_keluarga }}</td>
+                                <td>{{ $totalKeseluruhan->total_saluran_air_limbah }}</td>
+                                <td>{{ $totalKeseluruhan->total_jamban_keluarga }}</td>
+                                <td>{{ $totalKeseluruhan->total_jamban_keluarga_jumlah }}</td>
+                                <td>{{ $totalKeseluruhan->total_stiker_p4k }}</td>
+
+                                <td>{{ $totalKeseluruhan->jumlah_pdam }}</td>
+                                <td>{{ $totalKeseluruhan->jumlah_sumur }}</td>
+                                <td>{{ $totalKeseluruhan->jumlah_sumber_air_lain }}</td>
+
+                                <td>{{ $totalKeseluruhan->jumlah_makanan_pokok }}</td>
+                                <td>{{ $totalKeseluruhan->jumlah_makanan_pokok_lain }}</td>
+
+                                <td>{{ $totalKeseluruhan->total_aktivitas_up2k }}</td>
+                                <td>{{ $totalKeseluruhan->jumlah_aktivitas_up2k_lain }}</td>
+                                <td>{{ $totalKeseluruhan->total_memiliki_tabungan }}</td>
+                                <td>{{ $totalKeseluruhan->total_aktivitas_usaha_kesehatan_lingkungan }}</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                        
+                    </table>
+                </div>
+            
+                <div class="card-footer text-center" style="border-radius: 15px;">
+                    <div class="btn-group" role="group">
+                        <a href="{{ route('admin.laporan.statistik') }}" class="btn btn-primary">
+                                        <i class="fas fa-fw fa-chart-bar"></i>
+                                        Statistik
+                                    
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>    
+
+@endsection
+
