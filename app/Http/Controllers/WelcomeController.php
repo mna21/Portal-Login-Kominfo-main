@@ -18,6 +18,8 @@ class WelcomeController extends Controller
         $blogs = Blog::all();
         $totalUsers = User::where('role', 'user')->count();
 
+        
+
         // Mengirimkan data ke view welcome
         return view('welcome', [
             'services' => $services,
@@ -29,6 +31,7 @@ class WelcomeController extends Controller
     public function showServices()
     {
         $services = Service::all(); // Mengambil semua layanan dari database
+        dd($services);
         return view('services', compact('services'));
     }
 }

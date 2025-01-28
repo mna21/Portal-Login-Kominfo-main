@@ -34,6 +34,10 @@
             <td>{{ $dataKeluarga->nama_prop ?? 'Data tidak tersedia' }}</td>
         </tr>
         <tr>
+            <th>Jumlah Anggota Keluarga</th>
+            <td>{{ $dataKeluarga->jumlah_anggota_keluarga ?? 0 }}</td>
+        </tr>
+        <tr>
             <th>Balita</th>
             <td>{{ $dataKeluarga->balita ?? 0 }}</td>
         </tr>
@@ -68,6 +72,10 @@
         <tr>
             <th>Buta Hitung</th>
             <td>{{ $dataKeluarga->buta_hitung ?? 0 }}</td>
+        </tr>
+        <tr>
+            <th>Berkebutuhan Khusus</th>
+            <td>{{ $dataKeluarga->difabel ?? 0 }}</td>
         </tr>
         <tr>
             <th>Sumber Air Keluarga</th>
@@ -121,7 +129,7 @@
     <a href="{{ url()->previous() }}" class="btn btn-secondary">Kembali</a>
 
     <!-- Tombol Edit dan Hapus -->
-    <a href="{{ route('data-keluarga.edit', [$dataKeluarga->no_kk, $dataKeluarga->dawis_id, $dataKeluarga->kepala_rumah_tangga_id ?? 0]) }}" class="btn btn-warning">Edit</a>
+    <a href="{{ route('datakeluarga.edit', [$dataKeluarga->no_kk, $dataKeluarga->dawis_id, $dataKeluarga->kepala_rumah_tangga_id ?? 0]) }}" class="btn btn-warning">Edit</a>
 
     <form action="{{ route('admin.datakeluarga.destroy', [$dataKeluarga->no_kk, $dataKeluarga->dawis_id]) }}" method="POST" style="display:inline-block;">
         @csrf

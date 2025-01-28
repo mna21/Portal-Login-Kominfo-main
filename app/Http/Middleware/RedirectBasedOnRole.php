@@ -7,6 +7,22 @@ use Illuminate\Support\Facades\Auth;
 
 class RedirectBasedOnRole
 {
+
+    public function handle($request, Closure $next)
+    {
+        // Jika user adalah admin atau superadmin, lanjutkan
+        if (auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin') {
+            return $next($request);
+        }
+
+        // Jika bukan admin, hanya bisa akses data miliknya
+        if ($request->route('dawis') !== auth()->id()) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        return $next($request);
+    }
+    /*
     public function handle($request, Closure $next)
     {
         if (Auth::check()) {
@@ -23,4 +39,5 @@ class RedirectBasedOnRole
 
         return $next($request);
     }
+    */
 }

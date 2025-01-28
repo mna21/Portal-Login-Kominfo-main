@@ -8,6 +8,7 @@ use App\Models\Kel;
 use App\Models\DataKeluarga;
 use App\Models\Dawis;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf; // Periksa namespace yang tepat
 
 class AdminLaporanDawisDesaController extends Controller
 {
@@ -26,6 +27,7 @@ class AdminLaporanDawisDesaController extends Controller
                 'dk.no_kab',
                 'dk.no_prop',
                 DB::raw('COUNT(dk.nama_kepala_keluarga) AS jumlah_kepala_keluarga'),
+                DB::raw('SUM(dka.jumlah_anggota_keluarga) AS total_jumlah_anggota_keluarga'),
                 DB::raw('SUM(dka.balita) AS total_balita'),
                 DB::raw('SUM(dka.pus) AS total_pus'),
                 DB::raw('SUM(dka.wus) AS total_wus'),
@@ -35,6 +37,7 @@ class AdminLaporanDawisDesaController extends Controller
                 DB::raw('SUM(dka.buta_baca) AS total_buta_baca'),
                 DB::raw('SUM(dka.buta_tulis) AS total_buta_tulis'),
                 DB::raw('SUM(dka.buta_hitung) AS total_buta_hitung'),
+                DB::raw('SUM(dka.difabel) AS total_difabel'),
 
                 DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 1 THEN 1 ELSE 0 END) AS jumlah_layak_huni'), // Total Layak Huni
                 DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 0 THEN 1 ELSE 0 END) AS jumlah_tidak_layak_huni'), // Total Tidak Layak Huni
@@ -77,6 +80,7 @@ class AdminLaporanDawisDesaController extends Controller
         // Calculate totals
         $totals = [
             'jumlah_kepala_keluarga' => $dawisData->sum('jumlah_kepala_keluarga'),
+            'total_jumlah_anggota_keluarga' => $dawisData->sum('total_jumlah_anggota_keluarga'),
             'total_balita' => $dawisData->sum('total_balita'),
             'total_pus' => $dawisData->sum('total_pus'),
             'total_wus' => $dawisData->sum('total_wus'),
@@ -86,6 +90,8 @@ class AdminLaporanDawisDesaController extends Controller
             'total_buta_baca' => $dawisData->sum('total_buta_baca'),
             'total_buta_tulis' => $dawisData->sum('total_buta_tulis'),
             'total_buta_hitung' => $dawisData->sum('total_buta_hitung'),
+            'total_difabel' => $dawisData->sum('total_difabel'),
+
             'jumlah_layak_huni' => $dawisData->sum('jumlah_layak_huni'),
             'jumlah_tidak_layak_huni' => $dawisData->sum('jumlah_tidak_layak_huni'),
             'total_tempat_sampah_keluarga' => $dawisData->sum('total_tempat_sampah_keluarga'),
@@ -128,6 +134,7 @@ class AdminLaporanDawisDesaController extends Controller
                 'dk.no_kab',
                 'dk.no_prop',
                 DB::raw('COUNT(dk.nama_kepala_keluarga) AS jumlah_kepala_keluarga'),
+                DB::raw('SUM(dka.jumlah_anggota_keluarga) AS total_jumlah_anggota_keluarga'),
                 DB::raw('SUM(dka.balita) AS total_balita'),
                 DB::raw('SUM(dka.pus) AS total_pus'),
                 DB::raw('SUM(dka.wus) AS total_wus'),
@@ -137,6 +144,7 @@ class AdminLaporanDawisDesaController extends Controller
                 DB::raw('SUM(dka.buta_baca) AS total_buta_baca'),
                 DB::raw('SUM(dka.buta_tulis) AS total_buta_tulis'),
                 DB::raw('SUM(dka.buta_hitung) AS total_buta_hitung'),
+                DB::raw('SUM(dka.difabel) AS total_difabel'),
 
                 DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 1 THEN 1 ELSE 0 END) AS jumlah_layak_huni'), // Total Layak Huni
                 DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 0 THEN 1 ELSE 0 END) AS jumlah_tidak_layak_huni'), // Total Tidak Layak Huni
@@ -208,7 +216,7 @@ class AdminLaporanDawisDesaController extends Controller
 
         $chartData = [
             'labels' => [
-                'Kepala Keluarga', 'Balita', 'PUS', 'WUS', 'Ibu Hamil', 'Ibu Menyusui', 'Lansia',
+                'Kepala Keluarga', 'Balita', 'Pasangan Usia Subur', 'Wanita Usia Subur', 'Ibu Hamil', 'Ibu Menyusui', 'Lansia',
                 'Buta Baca', 'Buta Tulis', 'Buta Hitung', 'Layak Huni', 'Tidak Layak Huni', 'Tempat Sampah Keluarga',
                 'Saluran Air Limbah', 'Jamban Keluarga', 'Jamban Keluarga Jumlah', 'Stiker P4K',
                 'PDAM', 'Sumur','Sumber Air Lain', 'Beras', 'Non Beras',
@@ -262,6 +270,7 @@ class AdminLaporanDawisDesaController extends Controller
                 'dk.no_kab',
                 'dk.no_prop',
                 DB::raw('COUNT(dk.nama_kepala_keluarga) AS jumlah_kepala_keluarga'),
+                DB::raw('SUM(dka.jumlah_anggota_keluarga) AS total_jumlah_anggota_keluarga'),
                 DB::raw('SUM(dka.balita) AS total_balita'),
                 DB::raw('SUM(dka.pus) AS total_pus'),
                 DB::raw('SUM(dka.wus) AS total_wus'),
@@ -271,6 +280,7 @@ class AdminLaporanDawisDesaController extends Controller
                 DB::raw('SUM(dka.buta_baca) AS total_buta_baca'),
                 DB::raw('SUM(dka.buta_tulis) AS total_buta_tulis'),
                 DB::raw('SUM(dka.buta_hitung) AS total_buta_hitung'),
+                DB::raw('SUM(dka.difabel) AS total_difabel'),
 
                 DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 1 THEN 1 ELSE 0 END) AS jumlah_layak_huni'), // Total Layak Huni
                 DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 0 THEN 1 ELSE 0 END) AS jumlah_tidak_layak_huni'), // Total Tidak Layak Huni
@@ -316,6 +326,15 @@ class AdminLaporanDawisDesaController extends Controller
                     'chartId' => 'chartBarJumlahKepalaKeluarga'
                 ],
                 [
+                    'label' => 'Jumlah Anggota Keluarga',
+                    'data' => $dawisDataDesa->pluck('total_jumlah_anggota_keluarga'),
+                    'backgroundColor' => '#4e73df', // Blue
+                    'hoverBackgroundColor' => '#2e59d9',
+                    'borderColor' => '#4e73df',
+                    'borderWidth' => 1,
+                    'chartId' => 'chartBarJumlahAnggotaKeluarga'
+                ],
+                [
                     'label' => 'Balita',
                     'data' => $dawisDataDesa->pluck('total_balita'),
                     'backgroundColor' => '#ff6347', // Tomato Red
@@ -325,7 +344,7 @@ class AdminLaporanDawisDesaController extends Controller
                     'chartId' => 'chartBarBalita'
                 ],
                 [
-                    'label' => 'PUS',
+                    'label' => 'Pasangan Usia Subur',
                     'data' => $dawisDataDesa->pluck('total_pus'),
                     'backgroundColor' => '#28a745', // Green
                     'hoverBackgroundColor' => '#218838',
@@ -334,7 +353,7 @@ class AdminLaporanDawisDesaController extends Controller
                     'chartId' => 'chartBarPus'
                 ],
                 [
-                    'label' => 'WUS',
+                    'label' => 'Wanita Usia Subur',
                     'data' => $dawisDataDesa->pluck('total_wus'),
                     'backgroundColor' => '#17a2b8', // Teal
                     'hoverBackgroundColor' => '#138496',
@@ -395,6 +414,15 @@ class AdminLaporanDawisDesaController extends Controller
                     'borderColor' => '#34495e',
                     'borderWidth' => 1,
                     'chartId' => 'chartBarButaHitung'
+                ],
+                [
+                    'label' => 'Berkebutuhan Khusus',
+                    'data' => $dawisDataDesa->pluck('total_difabel'),
+                    'backgroundColor' => '#34495e', // Grey-Blue
+                    'hoverBackgroundColor' => '#2c3e50',
+                    'borderColor' => '#34495e',
+                    'borderWidth' => 1,
+                    'chartId' => 'chartBarDifabel'
                 ],
                 [
                     'label' => 'Rumah Layak Huni',
@@ -541,4 +569,111 @@ class AdminLaporanDawisDesaController extends Controller
 
     }
 
+
+    public function downloadPdf($no_prop, $no_kab, $no_kec, $no_kel)
+    {
+        // Query to get the data
+        $dawisData = DB::table('data_keluarga AS dk')
+        ->join('data_keluarga_akumulasi AS dka', 'dk.no_kk', '=', 'dka.no_kk')
+        ->join('dawis AS dw', 'dk.dawis_id', '=', 'dw.id')
+        ->select(
+            'dw.id AS dawis_id',
+            'dw.nama_dawis',
+            'dk.no_kel',
+            'dk.no_kec',
+            'dk.no_kab',
+            'dk.no_prop',
+            DB::raw('COUNT(dk.nama_kepala_keluarga) AS jumlah_kepala_keluarga'),
+            DB::raw('SUM(dka.jumlah_anggota_keluarga) AS total_jumlah_anggota_keluarga'),
+            DB::raw('SUM(dka.balita) AS total_balita'),
+            DB::raw('SUM(dka.pus) AS total_pus'),
+            DB::raw('SUM(dka.wus) AS total_wus'),
+            DB::raw('SUM(dka.ibu_hamil) AS total_ibu_hamil'),
+            DB::raw('SUM(dka.ibu_menyusui) AS total_ibu_menyusui'),
+            DB::raw('SUM(dka.lansia) AS total_lansia'),
+            DB::raw('SUM(dka.buta_baca) AS total_buta_baca'),
+            DB::raw('SUM(dka.buta_tulis) AS total_buta_tulis'),
+            DB::raw('SUM(dka.buta_hitung) AS total_buta_hitung'),
+            DB::raw('SUM(dka.difabel) AS total_difabel'),
+
+
+            DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 1 THEN 1 ELSE 0 END) AS jumlah_layak_huni'), // Total Layak Huni
+            DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 0 THEN 1 ELSE 0 END) AS jumlah_tidak_layak_huni'), // Total Tidak Layak Huni
+            DB::raw('SUM(dka.tempat_sampah_keluarga) AS total_tempat_sampah_keluarga'),
+            DB::raw('SUM(dka.saluran_air_limbah) AS total_saluran_air_limbah'),
+            DB::raw('SUM(dka.jamban_keluarga) AS total_jamban_keluarga'),
+            DB::raw('SUM(dka.jamban_keluarga_jumlah) AS total_jamban_keluarga_jumlah'),
+            DB::raw('SUM(dka.stiker_p4k) AS total_stiker_p4k'),
+
+            DB::raw('SUM(CASE WHEN dka.sumber_air_keluarga = 1 THEN 1 ELSE 0 END) AS jumlah_pdam'),
+            DB::raw('SUM(CASE WHEN dka.sumber_air_keluarga = 2 THEN 1 ELSE 0 END) AS jumlah_sumur'),
+            DB::raw('SUM(CASE WHEN dka.sumber_air_keluarga = 3 THEN 1 ELSE 0 END) AS jumlah_sumber_air_lain'),
+
+            //DB::raw('SUM(dka.sumber_air_keluarga) AS total_sumber_air_keluarga'),
+            //DB::raw('COUNT(DISTINCT dka.sumber_air_keluarga_lain) AS jumlah_sumber_air_keluarga_lain'),
+
+            DB::raw('SUM(CASE WHEN dka.makanan_pokok = 1 THEN 1 ELSE 0 END) AS jumlah_makanan_pokok'),
+            DB::raw('SUM(CASE WHEN dka.makanan_pokok = 2 THEN 1 ELSE 0 END) AS jumlah_makanan_pokok_lain'),
+
+            DB::raw('SUM(dka.aktivitas_up2k) AS total_aktivitas_up2k'),
+            DB::raw('COUNT(DISTINCT dka.aktivitas_up2k_lain) AS jumlah_aktivitas_up2k_lain'),
+            DB::raw('SUM(dka.memiliki_tabungan) AS total_memiliki_tabungan'),
+            DB::raw('SUM(dka.aktivitas_usaha_kesehatan_lingkungan) AS total_aktivitas_usaha_kesehatan_lingkungan')
+        )
+        ->where('dk.no_prop', $no_prop)
+        ->where('dk.no_kab', $no_kab)
+        ->where('dk.no_kec', $no_kec)
+        ->where('dk.no_kel', $no_kel)
+        ->groupBy('dw.id', 'dw.nama_dawis', 'dk.no_kel', 'dk.no_kec', 'dk.no_kab', 'dk.no_prop')
+        ->get();
+
+        // Get Desa Name
+        $namaDesa = DB::table('kel')
+        ->where('no_prop', $no_prop)
+        ->where('no_kab', $no_kab)
+        ->where('no_kec', $no_kec)
+        ->where('no_kel', $no_kel)
+        ->value('nama_kel');
+
+        // Calculate totals
+        $totals = [
+            'jumlah_kepala_keluarga' => $dawisData->sum('jumlah_kepala_keluarga'),
+            'total_jumlah_anggota_keluarga' => $dawisData->sum('total_jumlah_anggota_keluarga'),
+            'total_balita' => $dawisData->sum('total_balita'),
+            'total_pus' => $dawisData->sum('total_pus'),
+            'total_wus' => $dawisData->sum('total_wus'),
+            'total_ibu_hamil' => $dawisData->sum('total_ibu_hamil'),
+            'total_ibu_menyusui' => $dawisData->sum('total_ibu_menyusui'),
+            'total_lansia' => $dawisData->sum('total_lansia'),
+            'total_buta_baca' => $dawisData->sum('total_buta_baca'),
+            'total_buta_tulis' => $dawisData->sum('total_buta_tulis'),
+            'total_buta_hitung' => $dawisData->sum('total_buta_hitung'),
+            'total_difabel' => $dawisData->sum('total_difabel'),
+
+            'jumlah_layak_huni' => $dawisData->sum('jumlah_layak_huni'),
+            'jumlah_tidak_layak_huni' => $dawisData->sum('jumlah_tidak_layak_huni'),
+            'total_tempat_sampah_keluarga' => $dawisData->sum('total_tempat_sampah_keluarga'),
+            'total_saluran_air_limbah' => $dawisData->sum('total_saluran_air_limbah'),
+            'total_jamban_keluarga' => $dawisData->sum('total_jamban_keluarga'),
+            'total_jamban_keluarga_jumlah' => $dawisData->sum('total_jamban_keluarga_jumlah'),
+            'total_stiker_p4k' => $dawisData->sum('total_stiker_p4k'),
+            'jumlah_pdam' => $dawisData->sum('jumlah_pdam'),
+            'jumlah_sumur' => $dawisData->sum('jumlah_sumur'),
+            'jumlah_sumber_air_lain' => $dawisData->sum('jumlah_sumber_air_lain'),
+            'jumlah_makanan_pokok' => $dawisData->sum('jumlah_makanan_pokok'),
+            'jumlah_makanan_pokok_lain' => $dawisData->sum('jumlah_makanan_pokok_lain'),
+            'total_aktivitas_up2k' => $dawisData->sum('total_aktivitas_up2k'),
+            'jumlah_aktivitas_up2k_lain' => $dawisData->sum('jumlah_aktivitas_up2k_lain'),
+            'total_memiliki_tabungan' => $dawisData->sum('total_memiliki_tabungan'),
+            'total_aktivitas_usaha_kesehatan_lingkungan' => $dawisData->sum('total_aktivitas_usaha_kesehatan_lingkungan'),
+        ];
+
+       // Load PDF view
+       $pdf = PDF::loadView('admin.laporan.desa.dawisdesa.laporanDawisPDF', [
+        'dawisData' => $dawisData,
+        'totals' => $totals
+    ])->setPaper('A4', 'landscape'); // Atur kertas landscape
+
+    return $pdf->download('laporan_Dawis_PerDawis.pdf');
+    }
 }

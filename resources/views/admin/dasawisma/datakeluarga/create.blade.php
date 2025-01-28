@@ -99,6 +99,15 @@
     <!-- Form Data Keluarga Akumulasi 
     <h3>Data Keluarga Akumulasi</h3> -->
 
+    <!-- Jumlah Anggota Keluarga -->
+    <div class="form-group">
+        <label for="jumlah_anggota_keluarga">Jumlah Anggota Keluarga</label>
+        <input type="number" name="jumlah_anggota_keluarga" class="form-control" value="{{ old('jumlah_anggota_keluarga') }}" required>
+        @error('jumlah_anggota_keluarga')
+        <span class="text-danger">{{ $message }}</span>
+        @enderror
+    </div>
+
     <!-- Balita -->
     <div class="form-group">
         <label for="balita">Jumlah Balita</label>
@@ -152,6 +161,13 @@
         @enderror
     </div>
 
+    <div class="form-group">
+        <label for="difabel">Berkebutuhan Khusus</label>
+        <input type="number" name="difabel" class="form-control" value="{{ old('difabel') }}" required>
+        @error('difabel')
+        <span class="text-danger">{{ $message }}</span>
+        @enderror
+    </div>
 
     <!-- Ibu Hamil -->
     <div class="form-group">

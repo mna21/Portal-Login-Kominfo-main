@@ -31,8 +31,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-
+    <!-- Include Chart.js and the ChartDataLabels Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 </head>
 
 <body id="page-top">
@@ -123,11 +124,11 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDasaWisma"
                     aria-expanded="false" aria-controls="collapseDasaWisma">
                     <i class="fas fa-fw fa-users-cog"></i>
-                    <span>Management Dasa Wisma</span>
+                    <span>Management Dasawisma</span>
                 </a>
                 <div id="collapseDasaWisma" class="collapse" aria-labelledby="headingDasaWisma" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Manage Dasa Wisma:</h6>
+                        <h6 class="collapse-header">Manage Dasawisma:</h6>
                         <a class="collapse-item {{ Nav::isRoute('superadmin.provinsi.index') }}" href="{{ route('superadmin.provinsi.index') }}">
                             <i class="fas fa-fw fa-map-signs"></i> Manage Provinsi
                         </a>
@@ -144,9 +145,26 @@
                 </div>
             </li>
 
+            <!-- Navigasi Dasa Wisma -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('superadmin.dasawisma.index') }}">
+                    <i class="fas fa-fw fa-home"></i> <!-- Ganti dengan ikon rumah -->
+                    <span>{{ __('Dasa Wisma') }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('superadmin.laporan.index') }}">
+                    <i class="fas fa-fw fa-book"></i>
+                    <span>{{ __('Laporan') }}</span>
+                </a>
+            </li>
 
-
-
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('superadmin.laporan.statistik') }}">
+                    <i class="fas fa-fw fa-chart-pie"></i>
+                    <span>{{ __('Statistik') }}</span>
+                </a>
+            </li>
 
             <hr class="sidebar-divider">
 
@@ -160,14 +178,14 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUserAdmin"
                     aria-expanded="false" aria-controls="collapseUserAdmin">
                     <i class="fas fa-fw fa-users-cog"></i>
-                    <span>Management User & Admin </span>
+                    <span>Users</span>
                 </a>
                 <div id="collapseUserAdmin" class="collapse" aria-labelledby="headingUserAdmin" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Manage Roles:</h6>
-                        <a class="collapse-item {{ Nav::isRoute('superadmin.admins.index') }}" href="{{ route('superadmin.admins.index') }}">
+                        <h6 class="collapse-header">Roles:</h6>
+                        <!--<a class="collapse-item {{ Nav::isRoute('superadmin.admins.index') }}" href="{{ route('superadmin.admins.index') }}">
                             <i class="fas fa-fw fa-user-shield"></i> Administrator
-                        </a>
+                        </a>-->
                         <a class="collapse-item {{ Nav::isRoute('superadmin.users.index') }}" href="{{ route('superadmin.users.index') }}">
                             <i class="fas fa-fw fa-user"></i> User
                         </a>
@@ -227,17 +245,7 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    <!-- Topbar Search -->
-                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" action="{{ route('superadmin.search') }}" method="GET">
-                        <div class="input-group">
-                            <input type="text" name="search" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+
 
 
                     <!-- Topbar Navbar -->
@@ -289,14 +297,6 @@
                                 <a class="dropdown-item" href="{{ route('superadmin.profile') }}">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     {{ __('Profile') }}
-                                </a>
-                                <a class="dropdown-item" href="{{ route('superadmin.settings') }}">
-                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    {{ __('Settings') }}
-                                </a>
-                                <a class="dropdown-item" href="{{ route('superadmin.activitylog') }}">
-                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    {{ __('Activity Log') }}
                                 </a>
 
                                 <div class="dropdown-divider"></div>
@@ -378,6 +378,8 @@
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+
+
     @yield('scripts')
     @yield('styles')
 

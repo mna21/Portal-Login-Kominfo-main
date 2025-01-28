@@ -1,59 +1,73 @@
 @extends('admin.admin')
 
 @section('main-content')
-<div class="container">
-    <h1>Buat Data Dasa Wisma</h1>
-    <form action="{{ route('admin.dasawisma.store') }}" method="POST" id="dasawisma-form">
-        @csrf
-        <div class="form-group">
-            <label for="nama_dawis">Nama Dasa Wisma</label>
-            <input type="text" name="nama_dawis" id="nama_dawis" class="form-control" required>
+
+
+<div class="row">
+    <div class="col-xl-12 mb-4">
+        <div class="card shadow-lg h-100 py-2" style="border-radius: 15px;">
+            <div class="card-body" style="border-radius: 15px;">
+                <div class="card-header">
+                    <h5 class="font-weight-bold text-primary">Tambah Dasawisma</h5>
+                </div>
+
+                <form action="{{ route('admin.dasawisma.store') }}" method="POST" id="dasawisma-form">
+                    @csrf
+                    <div class="form-group">
+                        <label for="nama_dawis">Nama Dasa Wisma</label>
+                        <input type="text" name="nama_dawis" id="nama_dawis" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="provinsi">Provinsi</label>
+                        <select name="provinsi" id="provinsi" class="form-control" required>
+                            <option value="">Pilih Provinsi</option>
+                            @foreach ($provinsi as $p)
+                            <option value="{{ $p->no_prop }}">{{ $p->nama_prop }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="kabupaten">Kabupaten</label>
+                        <select name="kabupaten" id="kabupaten" class="form-control" required>
+                            <option value="">Pilih Kabupaten</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="kecamatan">Kecamatan</label>
+                        <select name="kecamatan" id="kecamatan" class="form-control" required>
+                            <option value="">Pilih Kecamatan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="kelurahan">Kelurahan</label>
+                        <select name="kelurahan" id="kelurahan" class="form-control" required>
+                            <option value="">Pilih Kelurahan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="rt">RT</label>
+                        <input type="number" name="rt" id="rt" class="form-control" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="rw">RW</label>
+                        <input type="number" name="rw" id="rw" class="form-control" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="dusun">Dusun</label>
+                        <input type="text" name="dusun" id="dusun" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="tahun">Tahun</label>
+                        <input type="number" name="tahun" id="tahun" class="form-control" required min="1900" max="{{ date('Y') }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </form>
+
+
+
+            </div>
         </div>
-        <div class="form-group">
-            <label for="provinsi">Provinsi</label>
-            <select name="provinsi" id="provinsi" class="form-control" required>
-                <option value="">Pilih Provinsi</option>
-                @foreach ($provinsi as $p)
-                <option value="{{ $p->no_prop }}">{{ $p->nama_prop }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="kabupaten">Kabupaten</label>
-            <select name="kabupaten" id="kabupaten" class="form-control" required>
-                <option value="">Pilih Kabupaten</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="kecamatan">Kecamatan</label>
-            <select name="kecamatan" id="kecamatan" class="form-control" required>
-                <option value="">Pilih Kecamatan</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="kelurahan">Kelurahan</label>
-            <select name="kelurahan" id="kelurahan" class="form-control" required>
-                <option value="">Pilih Kelurahan</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="rt">RT</label>
-            <input type="number" name="rt" id="rt" class="form-control" required min="1">
-        </div>
-        <div class="form-group">
-            <label for="rw">RW</label>
-            <input type="number" name="rw" id="rw" class="form-control" required min="1">
-        </div>
-        <div class="form-group">
-            <label for="dusun">Dusun</label>
-            <input type="text" name="dusun" id="dusun" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="tahun">Tahun</label>
-            <input type="number" name="tahun" id="tahun" class="form-control" required min="1900" max="{{ date('Y') }}">
-        </div>
-        <button type="submit" class="btn btn-primary">Simpan</button>
-    </form>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

@@ -154,12 +154,14 @@ class AdminDataKeluargaController extends Controller
             'kelurahan' => 'required|string',
             // Validasi tambahan untuk data_keluarga_akumulasi
 
+            'jumlah_anggota_keluarga' => 'nullable|integer',
             'balita' => 'nullable|integer',
             'pus' => 'nullable|integer',
             'wus' => 'nullable|integer',
             'buta_baca' => 'nullable|integer',
             'buta_tulis' => 'nullable|integer',
             'buta_hitung' => 'nullable|integer',
+            'difabel' => 'nullable|integer',
             'ibu_hamil' => 'nullable|integer',
             'ibu_menyusui' => 'nullable|integer',
             'lansia' => 'nullable|integer',
@@ -180,8 +182,8 @@ class AdminDataKeluargaController extends Controller
         ]);
 
         // Logika penyimpanan data ke database...
-
-
+        
+        //dd($request->all());
 
         // Membuat data keluarga baru
         DataKeluarga::create([
@@ -198,12 +200,14 @@ class AdminDataKeluargaController extends Controller
         // Membuat data akumulasi baru untuk keluarga tersebut
         DataKeluargaAkumulasi::create([
             'no_kk' => $request->no_kk,
+            'jumlah_anggota_keluarga' => $request->jumlah_anggota_keluarga,
             'balita' => $request->balita,
             'pus' => $request->pus,
             'wus' => $request->wus,
             'buta_baca' => $request->buta_baca,
             'buta_tulis' => $request->buta_tulis,
             'buta_hitung' => $request->buta_hitung,
+            'difabel' => $request->difabel,
             'ibu_hamil' => $request->ibu_hamil,
             'ibu_menyusui' => $request->ibu_menyusui,
             'lansia' => $request->lansia,
@@ -222,6 +226,8 @@ class AdminDataKeluargaController extends Controller
             'aktivitas_usaha_kesehatan_lingkungan' => $request->aktivitas_usaha_kesehatan_lingkungan,
             'memiliki_tabungan' => $request->memiliki_tabungan,
         ]);
+
+        
 
         // Redirect ke halaman daftar data keluarga dengan pesan sukses
         return redirect()->route('admin.datakeluarga.index', [
@@ -350,12 +356,14 @@ class AdminDataKeluargaController extends Controller
             'kecamatan' => 'required|string',
             'kelurahan' => 'required|string',
             // Validasi tambahan untuk data_keluarga_akumulasi
+            'jumlah_anggota_keluarga' => 'nullable|integer',
             'balita' => 'nullable|integer',
             'pus' => 'nullable|integer',
             'wus' => 'nullable|integer',
             'buta_baca' => 'nullable|integer',
             'buta_tulis' => 'nullable|integer',
             'buta_hitung' => 'nullable|integer',
+            'difabel' => 'nullable|integer',
             'ibu_hamil' => 'nullable|integer',
             'ibu_menyusui' => 'nullable|integer',
             'lansia' => 'nullable|integer',
@@ -401,12 +409,14 @@ class AdminDataKeluargaController extends Controller
         DataKeluargaAkumulasi::updateOrCreate(
             ['no_kk' => $validatedData['no_kk']],
             [
+                'jumlah_anggota_keluarga' => $validatedData['jumlah_anggota_keluarga'],
                 'balita' => $validatedData['balita'],
                 'pus' => $validatedData['pus'],
                 'wus' => $validatedData['wus'],
                 'buta_baca' => $validatedData['buta_baca'],
                 'buta_tulis' => $validatedData['buta_tulis'],
                 'buta_hitung' => $validatedData['buta_hitung'],
+                'difabel' => $validatedData['difabel'],
                 'ibu_hamil' => $validatedData['ibu_hamil'],
                 'ibu_menyusui' => $validatedData['ibu_menyusui'],
                 'lansia' => $validatedData['lansia'],

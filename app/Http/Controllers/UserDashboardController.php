@@ -9,6 +9,8 @@ use App\Models\Kab;
 use App\Models\Kec;
 use App\Models\Kel;
 use App\Models\Dawis;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserDashboardController extends Controller
 {
@@ -28,68 +30,34 @@ class UserDashboardController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index(Request $request)
+    /**
+     * Tampilkan dashboard untuk user.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function index()
     {
-        // Menghitung jumlah total user
-        $users = User::count();
+        // Ambil user yang sedang login
+        $user = Auth::user();
 
-        // Mengambil semua provinsi
-        $provinsi = Prop::all();
-
-        // Inisialisasi variabel kabupaten, kecamatan, kelurahan, dan dawis
-        $kabupaten = [];
-        $kecamatan = [];
-        $kelurahan = [];
-        $dawis = null;
-
-        // Pencarian berdasarkan provinsi
-        if ($request->filled('provinsi')) {
-            $kabupaten = Kab::where('no_prop', $request->provinsi)->get();
-
-            // Memastikan ada provinsi yang dipilih
-            if ($kabupaten->isEmpty()) {
-                return back()->withErrors(['provinsi' => 'Provinsi tidak ditemukan']);
-            }
+        // Pastikan user memiliki no_kel dan no_kec
+        if (!$user->no_kel || !$user->no_kec) {
+            return redirect()->back()->with('error', 'Akun Anda tidak memiliki akses ke data wilayah tertentu.');
         }
 
-        // Pencarian berdasarkan kabupaten
-        if ($request->filled('kabupaten')) {
-            $kecamatan = Kec::where('no_kab', $request->kabupaten)->get();
+        // Hitung jumlah Dawis berdasarkan no_kel dan no_kec user
+        $totalDawis = DB::table('dawis')
+            ->where('no_kel', $user->no_kel)
+            ->where('no_kec', $user->no_kec)
+            ->count();
 
-            // Memastikan ada kabupaten yang dipilih
-            if ($kecamatan->isEmpty()) {
-                return back()->withErrors(['kabupaten' => 'Kabupaten tidak ditemukan']);
-            }
-        }
-
-        // Pencarian berdasarkan kecamatan
-        if ($request->filled('kecamatan')) {
-            $kelurahan = Kel::where('no_kec', $request->kecamatan)->get();
-
-            // Memastikan ada kecamatan yang dipilih
-            if ($kelurahan->isEmpty()) {
-                return back()->withErrors(['kecamatan' => 'Kecamatan tidak ditemukan']);
-            }
-        }
-
-        // Widget dashboard
+        // Mengumpulkan data untuk widget
         $widget = [
-            'users' => $users,
-            // Tambahkan data lainnya ke widget jika perlu
+            'total_dawis' => $totalDawis,
         ];
 
-        // Mengambil data Dasa Wisma dengan relasi dan pagination
-        $dawisList = Dawis::with(['kel', 'kec', 'kab', 'prop'])->paginate(10);
-
-        // Mengirimkan data ke view
-        return view('user.dashboard', compact(
-            'widget',
-            'dawisList',
-            'provinsi',
-            'kabupaten',
-            'kecamatan',
-            'kelurahan'
-        ));
+        // Mengembalikan view dengan data widget
+        return view('user.dashboard', compact('widget'));
     }
 
     /**

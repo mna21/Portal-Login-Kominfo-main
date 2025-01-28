@@ -4,14 +4,20 @@
 <div class="row">
     <div class="col-xl-12 mb-4">
         <div class="card shadow-lg h-100 py-2" style="border-radius: 15px;">
-            <div class="card-body" style="border-radius: 15px;">
+
+           
                 <div class="card-header">
                     <h6 class="m-0 font-weight-bold text-primary">STATISTIK DASAWISMA DESA : {{ $namaDesa }}</h6>
                 </div>
+
                 <!-- Card for Chart -->
-                <div class="chart-bar" style="position: relative; height: 500px;">
-                    <canvas id="desaChart" width="400" height="200"></canvas>
+                <div class="card-body" style="border-radius: 15px;">
+                    <div class="chart-bar" style="position: relative; height: 500px;">
+                        <canvas id="desaChart" width="400" height="200"></canvas>
+                    </div>
                 </div>
+               
+
                 <div class="card-footer text-center" style="border-radius: 15px;">
                     <div class="btn-group" role="group">
                         <a href="{{ route('admin.laporan.desa.dawisdesa.index', [
@@ -25,7 +31,6 @@
                         </a>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 </div>
@@ -96,15 +101,18 @@
         <div class="col-xl-6 col-lg-7 mb-4">
             <!-- Bar Chart -->
             <div class="card shadow">
+
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Bar Chart: {{ $dataset['label'] }} Per Dawis</h6>
                 </div>
+
                 <div class="card-body" style="position: relative; height: 320px;">
-                    <div class="chart-bar">
+                    <div class="chart-area">
                         <canvas id="chart-{{ $index }}"></canvas>
                         <button class="btn btn-primary btn-sm mt-2" onclick="toggleTable('{{ $index }}')">Lihat Detail Tabel</button>
                     </div>
                 </div>
+
             </div>
 
             <!-- Hidden Table -->

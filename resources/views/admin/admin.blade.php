@@ -23,7 +23,7 @@
     <!-- Favicon -->
     <link href="{{ asset('img/favicon.png') }}" rel="icon" type="image/png">
     <!-- Bootstrap 5 JavaScript CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-mQ93FUTfN7uZeWkh5f6vPuqG8tj1wC1rPZQx40L+qOFRp1lH3FIBczuWwZ5yJvN" crossorigin="anonymous"></script>
+   
 
     <!-- Include Chart.js and the ChartDataLabels Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -90,9 +90,6 @@
                     <span>{{ __('Laporan') }}</span>
                 </a>
             </li>
-
-           
-            
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.laporan.statistik') }}">

@@ -119,8 +119,8 @@ Route::middleware('auth')->group(function () {
 });
 
 // routes/superadmin
-Route::get('/superadmin/profile', [SuperAdminProfileController::class, 'index'])->name('superadmin.profile');
-Route::get('/superadmin/about', [SuperAdminController::class, 'about'])->name('superadmin.about');
+//Route::get('/superadmin/profile', [SuperAdminProfileController::class, 'index'])->name('superadmin.profile');
+//Route::get('/superadmin/about', [SuperAdminController::class, 'about'])->name('superadmin.about');
 
 // Profile superadmin Routes
 Route::middleware('auth')->group(function () {
@@ -150,6 +150,8 @@ Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->group(func
     Route::delete('/users/{user}', [SuperAdminController::class, 'userDestroy'])->name('superadmin.users.destroy');
 });
 
+
+
 Route::middleware(['auth', 'role:administrator'])->prefix('admin')->group(function () {
     // Route untuk User
     Route::get('/users', [AdminController::class, 'Index'])->name('admin.users.index');
@@ -159,6 +161,15 @@ Route::middleware(['auth', 'role:administrator'])->prefix('admin')->group(functi
     Route::put('/users/{user}', [AdminController::class, 'userUpdate'])->name('admin.users.update');
     Route::delete('/users/{user}', [AdminController::class, 'userDestroy'])->name('admin.users.destroy');
 });
+
+
+Route::get('/api/kabupaten/{provinsi}', [AdminController::class, 'getKabupaten']);
+Route::get('/api/kecamatan/{kabupaten}', [AdminController::class, 'getKecamatan']);
+Route::get('/api/kelurahan/{kecamatan}', [AdminController::class, 'getKelurahan']);
+
+Route::get('/admin/dasawisma/get-kelurahan', [AdminController::class, 'getKelurahan']);
+Route::get('/kelurahan/{kecamatan}', [AdminController::class, 'getKelurahan']);
+
 
 
 
@@ -329,6 +340,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/user/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
+   
 });
 Route::middleware(['auth', 'superadmin'])->group(function () {
     Route::get('/superadmin/dashboard', [SuperAdminDashboardController::class, 'index'])->name('superadmin.dashboard');
@@ -378,7 +390,7 @@ Route::get('/services/{id}', [ServiceController::class, 'show'])->name('service-
 // routes/web.php
 Route::get('/blog/{id}', [SuperAdminBlogController::class, 'show'])->name('blog.show');
 
-Route::get('blog-details/{id}', [BlogController::class, 'show'])->name('blog-details');
+//Route::get('blog-details/{id}', [BlogController::class, 'show'])->name('blog-details');
 Route::get('blog/{id}', [SuperAdminBlogController::class, 'show'])->name('blog.show');
 Route::get('blog/{id}', [BlogController::class, 'show'])->name('blog.show');
 
@@ -481,6 +493,21 @@ Route::prefix('superadmin')->middleware(['auth', 'role:superadmin'])->group(func
     Route::get('provinsi/search', [PropController::class, 'search'])->name('superadmin.provinsi.search'); // Pencarian
 });
 
+Route::prefix('superadmin')->middleware(['auth', 'role:superadmin'])->group(function () {
+    Route::get('provinsi', [PropController::class, 'index'])->name('superadmin.provinsi.index'); // Halaman list provinsi
+    Route::get('provinsi/create', [PropController::class, 'create'])->name('superadmin.provinsi.create'); // Halaman form tambah
+    Route::post('provinsi', [PropController::class, 'store'])->name('superadmin.provinsi.store'); // Menyimpan data provinsi
+    Route::get('provinsi/{provinsi}', [PropController::class, 'show'])->name('superadmin.provinsi.show'); // Detail provinsi
+    Route::get('provinsi/{provinsi}/edit', [PropController::class, 'edit'])->name('superadmin.provinsi.edit'); // Form edit
+    Route::put('provinsi/{provinsi}', [PropController::class, 'update'])->name('superadmin.provinsi.update'); // Update provinsi
+    Route::delete('provinsi/{provinsi}', [PropController::class, 'destroy'])->name('superadmin.provinsi.destroy'); // Hapus provinsi
+    Route::get('provinsi/search', [PropController::class, 'search'])->name('superadmin.provinsi.search'); // Pencarian
+});
+
+
+
+
+
 use App\Http\Controllers\KabController;
 
 Route::prefix('superadmin')->middleware(['auth', 'role:superadmin'])->as('superadmin.')->group(function () {
@@ -514,52 +541,59 @@ Route::prefix('user')->group(function () {
 
 
 use App\Http\Controllers\AdminDasaWismaController;
+use App\Http\Controllers\AdminKepalaRumahTanggaController;
+use App\Http\Controllers\AdminDataKeluargaController;
+
+
+
+Route::middleware(['auth', 'role:administrator'])->group(function () {
+    Route::prefix('admin/dasawisma')->group(function () {
+        Route::get('/', [AdminDasaWismaController::class, 'index'])->name('admin.dasawisma.index');
+        Route::get('/create', [AdminDasaWismaController::class, 'create'])->name('admin.dasawisma.create');
+        Route::post('/', [AdminDasaWismaController::class, 'store'])->name('admin.dasawisma.store');
+        Route::get('/{id}', [AdminDasaWismaController::class, 'show'])->name('admin.dasawisma.show');
+        Route::get('/{id}/edit', [AdminDasaWismaController::class, 'edit'])->name('admin.dasawisma.edit');
+        Route::put('/{id}', [AdminDasaWismaController::class, 'update'])->name('admin.dasawisma.update');
+        Route::delete('/{id}', [AdminDasaWismaController::class, 'destroy'])->name('admin.dasawisma.destroy');
+
+        // Rute untuk Kepala Rumah Tangga
+        Route::get('/{id}/kepala-rumah-tangga', [AdminDasaWismaController::class, 'kepalaRumahTangga'])->name('admin.dasawisma.kepalaRumahTangga');
+    });
+});
+
+Route::get('/debug', function () {
+    return auth()->user()->role; // Cek apakah role benar-benar 'user'
+});
+
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('dasawisma', AdminDasaWismaController::class)->names('admin.dasawisma');
+
+
+    Route::prefix('admin/kepalarumahtangga')->group(function () {
+        Route::get('{dawisId}', [AdminKepalaRumahTanggaController::class, 'index'])->name('admin.dasawisma.kepalaRumahTangga');
+        Route::get('{dawisId}/create', [AdminKepalaRumahTanggaController::class, 'create'])->name('admin.dasawisma.kepalaRumahTanggaCreate');
+        Route::post('{dawisId}', [AdminKepalaRumahTanggaController::class, 'store'])->name('admin.dasawisma.kepalaRumahTangga.store');
+        Route::get('edit/{id}', [AdminKepalaRumahTanggaController::class, 'edit'])->name('admin.dasawisma.kepalaRumahTanggaEdit'); // Tambahkan route ini
+        Route::put('{id}', [AdminKepalaRumahTanggaController::class, 'update'])->name('admin.kepalaRumahTangga.update');
+        Route::get('{dawisId}/show/{id}', [AdminKepalaRumahTanggaController::class, 'show'])->name('admin.dasawisma.kepalaRumahTanggaShow'); // Pastikan route ini adax 
+        Route::delete('{id}', [AdminKepalaRumahTanggaController::class, 'destroy'])->name('admin.dasawisma.kepalaRumahTangga.destroy');
+    });
+
+    Route::prefix('admin/datakeluarga')->group(function () {
+        Route::get('show//{no_kk}/{dawis_id}/{kepala_rumah_tangga_id?}', [AdminDataKeluargaController::class, 'show'])->name('admin.datakeluarga.show'); // Taruh di paling atas
+    
+        Route::get('/{dawis_id}/{kepala_rumah_tangga_id?}', [AdminDataKeluargaController::class, 'index'])->name('admin.datakeluarga.index');
+        Route::get('/create/{dawis_id}/{kepala_rumah_tangga_id?}', [AdminDataKeluargaController::class, 'create'])->name('admin.datakeluarga.create');
+        Route::post('store', [AdminDataKeluargaController::class, 'store'])->name('admin.datakeluarga.store');
+        Route::get('/edit/{no_kk}/{dawis_id}/{kepala_rumah_tangga_id}', [AdminDataKeluargaController::class, 'edit'])->name('datakeluarga.edit');
+        Route::put('/{no_kk}/{dawis_id}', [AdminDataKeluargaController::class, 'update'])->name('admin.datakeluarga.update');
+        Route::delete('/{no_kk}/{dawis_id}/{kepala_rumah_tangga_id?}', [AdminDataKeluargaController::class, 'destroy'])->name('admin.datakeluarga.destroy');
+    });
+ 
+
 });
 
-Route::prefix('admin/dasawisma')->group(function () {
-    Route::get('/', [AdminDasaWismaController::class, 'index'])->name('admin.dasawisma.index');
-    Route::get('/create', [AdminDasaWismaController::class, 'create'])->name('admin.dasawisma.create');
-    Route::post('/', [AdminDasaWismaController::class, 'store'])->name('admin.dasawisma.store');
-    Route::get('/{id}', [AdminDasaWismaController::class, 'show'])->name('admin.dasawisma.show');
-    Route::get('/{id}/edit', [AdminDasaWismaController::class, 'edit'])->name('admin.dasawisma.edit');
-    Route::put('/{id}', [AdminDasaWismaController::class, 'update'])->name('admin.dasawisma.update');
-    Route::delete('/{id}', [AdminDasaWismaController::class, 'destroy'])->name('admin.dasawisma.destroy');
-
-    // Route untuk mengelola Kepala Rumah Tangga dari Dasa Wisma tertentu
-    Route::get('/{id}/kepala-rumah-tangga', [AdminDasaWismaController::class, 'kepalaRumahTangga'])->name('admin.dasawisma.kepalaRumahTangga');
-});
-
-
-
-use App\Http\Controllers\AdminKepalaRumahTanggaController;
-
-
-
-Route::prefix('admin/kepalarumahtangga')->group(function () {
-    Route::get('{dawisId}', [AdminKepalaRumahTanggaController::class, 'index'])->name('admin.dasawisma.kepalaRumahTangga');
-    Route::get('{dawisId}/create', [AdminKepalaRumahTanggaController::class, 'create'])->name('admin.dasawisma.kepalaRumahTanggaCreate');
-    Route::post('{dawisId}', [AdminKepalaRumahTanggaController::class, 'store'])->name('admin.dasawisma.kepalaRumahTangga.store');
-    Route::get('edit/{id}', [AdminKepalaRumahTanggaController::class, 'edit'])->name('admin.dasawisma.kepalaRumahTanggaEdit'); // Tambahkan route ini
-    Route::put('{id}', [AdminKepalaRumahTanggaController::class, 'update'])->name('admin.kepalaRumahTangga.update');
-    Route::get('{dawisId}/show/{id}', [AdminKepalaRumahTanggaController::class, 'show'])->name('admin.dasawisma.kepalaRumahTanggaShow'); // Pastikan route ini adax 
-    Route::delete('{id}', [AdminKepalaRumahTanggaController::class, 'destroy'])->name('admin.dasawisma.kepalaRumahTangga.destroy');
-});
-
-use App\Http\Controllers\AdminDataKeluargaController;
-
-Route::prefix('admin/datakeluarga')->group(function () {
-    Route::get('show//{no_kk}/{dawis_id}/{kepala_rumah_tangga_id?}', [AdminDataKeluargaController::class, 'show'])->name('admin.datakeluarga.show'); // Taruh di paling atas
-
-    Route::get('/{dawis_id}/{kepala_rumah_tangga_id?}', [AdminDataKeluargaController::class, 'index'])->name('admin.datakeluarga.index');
-    Route::get('/create/{dawis_id}/{kepala_rumah_tangga_id?}', [AdminDataKeluargaController::class, 'create'])->name('admin.datakeluarga.create');
-    Route::post('store', [AdminDataKeluargaController::class, 'store'])->name('admin.datakeluarga.store');
-    Route::get('/edit/{no_kk}/{dawis_id}/{kepala_rumah_tangga_id}', [AdminDataKeluargaController::class, 'edit'])->name('data-keluarga.edit');
-    Route::put('/{no_kk}/{dawis_id}', [AdminDataKeluargaController::class, 'update'])->name('admin.datakeluarga.update');
-    Route::delete('/{no_kk}/{dawis_id}/{kepala_rumah_tangga_id?}', [AdminDataKeluargaController::class, 'destroy'])->name('admin.datakeluarga.destroy');
-});
 
 
 
@@ -615,48 +649,213 @@ Route::prefix('admin/datakeluargaakumulasi')->group(function () {
 use App\Http\Controllers\AdminLaporanKecamatanController;
 use App\Http\Controllers\AdminAkumulasiDesaController;
 use App\Http\Controllers\AdminStatistikKecamatanController;
-
-
-// Route untuk Laporan
-Route::prefix('admin/laporan')->group(function () {
-    //daftar kec
-    Route::get('/', [AdminLaporanKecamatanController::class, 'index'])->name('admin.laporan.index');
-    //statistik
-    Route::get('/statistik', [AdminLaporanKecamatanController::class, 'statistik'])->name('admin.laporan.statistik');
-    
-    //akumulasi
-    //Route::get('akumulasikecamatan/{no_kec}/{no_kab}/{no_prop}', [AdminLaporanKecamatanController::class, 'dataAkumulasiKecamatan'])->name('admin.laporan.akumulasikecamatan.dataAkumulasiKecamatan');
-    //statistik
-    //Route::get('statistikkecamatan/{no_kec}/{no_kab}/{no_prop}', [AdminStatistikKecamatanController::class, 'index'])->name('admin.laporan.statistikkecamatan.index');
-});
-
-
-
 use App\Http\Controllers\AdminLaporanDesaController;
 use App\Http\Controllers\AdminStatistikDesaController;
 use App\Http\Controllers\AdminLaporanDawisDesaController;
 use App\Http\Controllers\AdminDataAkumulasiDawisController;
 
 
-Route::prefix('admin/laporan')->group(function () {
-    //daftar Desa
+
+Route::middleware(['auth', 'role:administrator'])->prefix('admin/laporan')->group(function () {
+    // Daftar Kecamatan
+    Route::get('/', [AdminLaporanKecamatanController::class, 'index'])->name('admin.laporan.index');
+    // Statistik Kecamatan
+    Route::get('/statistik', [AdminLaporanKecamatanController::class, 'statistik'])->name('admin.laporan.statistik');
+    //DownloadPDFPerKecamatan
+    Route::get('/admin/laporan/download', [AdminLaporanKecamatanController::class, 'downloadPdf'])->name('admin.laporan.downloadPdf');
+
+    // Daftar Desa berdasarkan parameter no_prop, no_kab, no_kec
     Route::get('/{no_prop}/{no_kab}/{no_kec}', [AdminLaporanDesaController::class, 'index'])->name('admin.laporan.desa.index');
-    //statistik
+    // Statistik Desa
     Route::get('/{no_prop}/{no_kab}/{no_kec}/statistikkecamatan', [AdminLaporanDesaController::class, 'statistik'])->name('admin.laporan.desa.statistikkecamatan');
+    //DownloadPDFPerKecamatan
+    //Route::get('/admin/laporan/download', [AdminLaporanKecamatanController::class, 'downloadPdf'])->name('admin.laporan.downloadPdf');
+    Route::get('/{no_prop}/{no_kab}/{no_kec}/download', [AdminLaporanDesaController::class, 'downloadPdf'])->name('admin.laporan.desa.laporanDesPDF');
     
-    //akumulasi desa
-    //Route::get('akumulasidesa/{no_prop}/{no_kab}/{no_kec}/{no_kel}', [AdminAkumulasiDesaController::class, 'index'])->name('admin.laporan.akumulasidesa.index');
-    //Statistik Desa
-    //Route::get('statistikdesa/{no_prop}/{no_kab}/{no_kec}/{no_kel}', [AdminStatistikDesaController::class, 'index'])->name('admin.laporan.statistikdesa.index');
-    
-    
-    //daftar list dawis
+    // Daftar Dawis Desa berdasarkan parameter no_prop, no_kab, no_kec, no_kel
     Route::get('dawisdesa/{no_prop}/{no_kab}/{no_kec}/{no_kel}', [AdminLaporanDawisDesaController::class, 'index'])->name('admin.laporan.desa.dawisdesa.index');
-    //statistik
+    // Statistik Dawis Desa
     Route::get('dawisdesa/{no_prop}/{no_kab}/{no_kec}/{no_kel}/statistikdesa', [AdminLaporanDawisDesaController::class, 'statistikDesa'])->name('admin.laporan.desa.dawisdesa.statistikdesa');
-    //Route::get('dawisdesa/{no_prop}/{no_kab}/{no_kec}/{no_kel}/{id_dawis}', [AdminDataAkumulasiDawisController::class, 'index'])->name('admin.laporan.desa.dawisdesa.akumulasidawis');
+    //Download Data Laporan Dawis
+    Route::get('dawisdesa/{no_prop}/{no_kab}/{no_kec}/{no_kel}/download', [AdminLaporanDawisDesaController::class, 'downloadPdf'])->name('admin.laporan.desa.dawisdesa.laporanDawisPDF');
+
+    // Akumulasi Dawis
+    // Route::get('dawisdesa/{no_prop}/{no_kab}/{no_kec}/{no_kel}/{id_dawis}', [AdminDataAkumulasiDawisController::class, 'index'])->name('admin.laporan.desa.dawisdesa.akumulasidawis');
+});
+
+
+
+use App\Http\Controllers\SuperAdminDasaWismaController;
+use App\Http\Controllers\SuperAdminKepalaRumahTanggaController;
+use App\Http\Controllers\SuperAdminDataKeluargaController;
+use App\Http\Controllers\SuperAdminDataPendudukController;
+use App\Http\Controllers\SuperAdminLaporanKecamatanController;
+use App\Http\Controllers\SuperAdminLaporanDesaController;
+use App\Http\Controllers\SuperAdminLaporanDawisDesaController;
+
+
+
+
+Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->group(function () {
+    // Rute Dasawisma
+    Route::prefix('dasawisma')->group(function () {
+        Route::get('/', [SuperAdminDasaWismaController::class, 'index'])->name('superadmin.dasawisma.index');
+        Route::get('/create', [SuperAdminDasaWismaController::class, 'create'])->name('superadmin.dasawisma.create');
+        Route::post('/', [SuperAdminDasaWismaController::class, 'store'])->name('superadmin.dasawisma.store');
+        Route::get('/{id}', [SuperAdminDasaWismaController::class, 'show'])->name('superadmin.dasawisma.show');
+        Route::get('/{id}/edit', [SuperAdminDasaWismaController::class, 'edit'])->name('superadmin.dasawisma.edit');
+        Route::put('/{id}', [SuperAdminDasaWismaController::class, 'update'])->name('superadmin.dasawisma.update');
+        Route::delete('/{id}', [SuperAdminDasaWismaController::class, 'destroy'])->name('superadmin.dasawisma.destroy');
+
+        // Rute Kepala Rumah Tangga dalam Dasawisma
+        Route::get('/{id}/kepala-rumah-tangga', [SuperAdminDasaWismaController::class, 'kepalaRumahTangga'])->name('superadmin.dasawisma.kepalaRumahTangga');
+    });
+
+     // Rute Kepala Rumah Tangga
+     Route::prefix('kepalarumahtangga')->group(function () {
+        Route::get('{dawisId}', [SuperAdminKepalaRumahTanggaController::class, 'index'])->name('superadmin.dasawisma.kepalaRumahTangga');
+        Route::get('{dawisId}/create', [SuperAdminKepalaRumahTanggaController::class, 'create'])->name('superadmin.dasawisma.kepalaRumahTanggaCreate');
+        Route::post('{dawisId}', [SuperAdminKepalaRumahTanggaController::class, 'store'])->name('superadmin.dasawisma.kepalaRumahTangga.store');
+        Route::get('edit/{id}', [SuperAdminKepalaRumahTanggaController::class, 'edit'])->name('superadmin.dasawisma.kepalaRumahTanggaEdit');
+        Route::put('{id}', [SuperAdminKepalaRumahTanggaController::class, 'update'])->name('superadmin.kepalaRumahTangga.update');
+        Route::get('{dawisId}/show/{id}', [SuperAdminKepalaRumahTanggaController::class, 'show'])->name('superadmin.dasawisma.kepalaRumahTanggaShow');
+        Route::delete('{id}', [SuperAdminKepalaRumahTanggaController::class, 'destroy'])->name('superadmin.dasawisma.kepalaRumahTangga.destroy');
+    });
+
+    // Rute Data Keluarga
+    Route::prefix('datakeluarga')->group(function () {
+        Route::get('show/{no_kk}/{dawis_id}/{kepala_rumah_tangga_id?}', [SuperAdminDataKeluargaController::class, 'show'])->name('superadmin.datakeluarga.show');
+        Route::get('/{dawis_id}/{kepala_rumah_tangga_id?}', [SuperAdminDataKeluargaController::class, 'index'])->name('superadmin.datakeluarga.index');
+        Route::get('/create/{dawis_id}/{kepala_rumah_tangga_id?}', [SuperAdminDataKeluargaController::class, 'create'])->name('superadmin.datakeluarga.create');
+        Route::post('store', [SuperAdminDataKeluargaController::class, 'store'])->name('superadmin.datakeluarga.store');
+        Route::get('/edit/{no_kk}/{dawis_id}/{kepala_rumah_tangga_id}', [SuperAdminDataKeluargaController::class, 'edit'])->name('superadmin.datakeluarga.edit');
+        Route::put('/{no_kk}/{dawis_id}', [SuperAdminDataKeluargaController::class, 'update'])->name('superadmin.datakeluarga.update');
+        Route::delete('/{no_kk}/{dawis_id}/{kepala_rumah_tangga_id?}', [SuperAdminDataKeluargaController::class, 'destroy'])->name('superadmin.datakeluarga.destroy');
+    });
+
+    Route::prefix('datapenduduk')->group(function () {
+        // Tambahkan rute show di sini
+        Route::get('/show/{id}/{no_kk}', [SuperAdminDataPendudukController::class, 'show'])->name('superadmin.datapenduduk.show');
+        //
+        Route::get('/{dawis_id}/{kepala_rumah_tangga_id}/{no_kk}', [SuperAdminDataPendudukController::class, 'index'])->name('superadmin.datapenduduk.index');
+        Route::get('/create/{dawis_id}/{kepala_rumah_tangga_id}/{no_kk}', [SuperAdminDataPendudukController::class, 'create'])->name('superadmin.datapenduduk.create');
+        Route::post('/store', [SuperAdminDataPendudukController::class, 'store'])->name('superadmin.datapenduduk.store');
+        Route::get('/edit/{no_kk}', [SuperAdminDataPendudukController::class, 'edit'])->name('superadmin.datapenduduk.edit');
+        Route::put('/update/{no_kk}', [SuperAdminDataPendudukController::class, 'update'])->name('superadmin.datapenduduk.update');
+        Route::delete('/destroy/{id}/{no_kk}/{dawis_id}/{kepala_rumah_tangga_id}', [SuperAdminDataPendudukController::class, 'destroy'])->name('superadmin.datapenduduk.destroy');
+    });
+
+
+    Route::prefix('laporan')->group(function () {
+        // Daftar Kecamatan
+        Route::get('/', [SuperAdminLaporanKecamatanController::class, 'index'])->name('superadmin.laporan.index');
+        // Statistik Kecamatan
+        Route::get('/statistik', [SuperAdminLaporanKecamatanController::class, 'statistik'])->name('superadmin.laporan.statistik');
+        //DownloadPDFPerKecamatan
+        Route::get('/admin/laporan/download', [SuperAdminLaporanKecamatanController::class, 'downloadPdf'])->name('superadmin.laporan.downloadPdf');
+
+        // Daftar Desa berdasarkan parameter no_prop, no_kab, no_kec
+        Route::get('/{no_prop}/{no_kab}/{no_kec}', [SuperAdminLaporanDesaController::class, 'index'])->name('superadmin.laporan.desa.index');
+        // Statistik Desa
+        Route::get('/{no_prop}/{no_kab}/{no_kec}/statistikkecamatan', [SuperAdminLaporanDesaController::class, 'statistik'])->name('superadmin.laporan.desa.statistikkecamatan');
+        //DownloadPDFPerKecamatan
+        //Route::get('/admin/laporan/download', [AdminLaporanKecamatanController::class, 'downloadPdf'])->name('admin.laporan.downloadPdf');
+        Route::get('/{no_prop}/{no_kab}/{no_kec}/download', [SuperAdminLaporanDesaController::class, 'downloadPdf'])->name('superadmin.laporan.desa.laporanDesPDF');
+        
+        // Daftar Dawis Desa berdasarkan parameter no_prop, no_kab, no_kec, no_kel
+        Route::get('dawisdesa/{no_prop}/{no_kab}/{no_kec}/{no_kel}', [SuperAdminLaporanDawisDesaController::class, 'index'])->name('superadmin.laporan.desa.dawisdesa.index');
+        // Statistik Dawis Desa
+        Route::get('dawisdesa/{no_prop}/{no_kab}/{no_kec}/{no_kel}/statistikdesa', [SuperAdminLaporanDawisDesaController::class, 'statistikDesa'])->name('superadmin.laporan.desa.dawisdesa.statistikdesa');
+        //Download Data Laporan Dawis
+        Route::get('dawisdesa/{no_prop}/{no_kab}/{no_kec}/{no_kel}/download', [SuperAdminLaporanDawisDesaController::class, 'downloadPdf'])->name('superadmin.laporan.desa.dawisdesa.laporanDawisPDF');
+
+        // Akumulasi Dawis
+        // Route::get('dawisdesa/{no_prop}/{no_kab}/{no_kec}/{no_kel}/{id_dawis}', [AdminDataAkumulasiDawisController::class, 'index'])->name('admin.laporan.desa.dawisdesa.akumulasidawis');
+    });
+
+        
+    Route::get('/api/kabupaten/{provinsi}', [SuperAdminController::class, 'getKabupaten']);
+    Route::get('/api/kecamatan/{kabupaten}', [SuperAdminController::class, 'getKecamatan']);
+    Route::get('/api/kelurahan/{kecamatan}', [SuperAdminController::class, 'getKelurahan']);
+
 
 });
+
+
+
+
+
+use App\Http\Controllers\UserDasawismaController;
+use App\Http\Controllers\UserKepalaRumahTanggaController;
+use App\Http\Controllers\UserDataKeluargaController;
+use App\Http\Controllers\UserDataPendudukController;
+use App\Http\Controllers\UserLaporanDawisDesaController;
+
+Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
+    // Rute Dasawisma
+    Route::prefix('dasawisma')->group(function () {
+        Route::get('/', [UserDasawismaController::class, 'index'])->name('user.dasawisma.index');
+        Route::get('/create', [UserDasawismaController::class, 'create'])->name('user.dasawisma.create');
+        Route::post('/', [UserDasawismaController::class, 'store'])->name('user.dasawisma.store');
+        Route::get('/{id}', [UserDasawismaController::class, 'show'])->name('user.dasawisma.show');
+        Route::get('/{id}/edit', [UserDasawismaController::class, 'edit'])->name('user.dasawisma.edit');
+        Route::put('/{id}', [UserDasawismaController::class, 'update'])->name('user.dasawisma.update');
+        Route::delete('/{id}', [UserDasawismaController::class, 'destroy'])->name('user.dasawisma.destroy');
+
+        // Rute Kepala Rumah Tangga dalam Dasawisma
+        Route::get('/{id}/kepala-rumah-tangga', [UserDasawismaController::class, 'kepalaRumahTangga'])->name('user.dasawisma.kepalaRumahTangga');
+    });
+
+    // Rute Kepala Rumah Tangga
+    Route::prefix('kepalarumahtangga')->group(function () {
+        Route::get('{dawisId}', [UserKepalaRumahTanggaController::class, 'index'])->name('user.dasawisma.kepalaRumahTangga');
+        Route::get('{dawisId}/create', [UserKepalaRumahTanggaController::class, 'create'])->name('user.dasawisma.kepalaRumahTanggaCreate');
+        Route::post('{dawisId}', [UserKepalaRumahTanggaController::class, 'store'])->name('user.dasawisma.kepalaRumahTangga.store');
+        Route::get('edit/{id}', [UserKepalaRumahTanggaController::class, 'edit'])->name('user.dasawisma.kepalaRumahTanggaEdit');
+        Route::put('{id}', [UserKepalaRumahTanggaController::class, 'update'])->name('user.kepalaRumahTangga.update');
+        Route::get('{dawisId}/show/{id}', [UserKepalaRumahTanggaController::class, 'show'])->name('user.dasawisma.kepalaRumahTanggaShow');
+        Route::delete('{id}', [UserKepalaRumahTanggaController::class, 'destroy'])->name('user.dasawisma.kepalaRumahTangga.destroy');
+    });
+
+    // Rute Data Keluarga
+    Route::prefix('datakeluarga')->group(function () {
+        Route::get('show/{no_kk}/{dawis_id}/{kepala_rumah_tangga_id?}', [UserDataKeluargaController::class, 'show'])->name('user.datakeluarga.show');
+        Route::get('/{dawis_id}/{kepala_rumah_tangga_id?}', [UserDataKeluargaController::class, 'index'])->name('user.datakeluarga.index');
+        Route::get('/create/{dawis_id}/{kepala_rumah_tangga_id?}', [UserDataKeluargaController::class, 'create'])->name('user.datakeluarga.create');
+        Route::post('store', [UserDataKeluargaController::class, 'store'])->name('user.datakeluarga.store');
+        Route::get('/edit/{no_kk}/{dawis_id}/{kepala_rumah_tangga_id}', [UserDataKeluargaController::class, 'edit'])->name('data-keluarga.edit');
+        Route::put('/{no_kk}/{dawis_id}', [UserDataKeluargaController::class, 'update'])->name('user.datakeluarga.update');
+        Route::delete('/{no_kk}/{dawis_id}/{kepala_rumah_tangga_id?}', [UserDataKeluargaController::class, 'destroy'])->name('user.datakeluarga.destroy');
+    });
+
+    Route::prefix('datapenduduk')->group(function () {
+        // Tambahkan rute show di sini
+        Route::get('/show/{id}/{no_kk}', [UserDataPendudukController::class, 'show'])->name('user.datapenduduk.show');
+        //
+        Route::get('/{dawis_id}/{kepala_rumah_tangga_id}/{no_kk}', [UserDataPendudukController::class, 'index'])->name('user.datapenduduk.index');
+        Route::get('/create/{dawis_id}/{kepala_rumah_tangga_id}/{no_kk}', [UserDataPendudukController::class, 'create'])->name('user.datapenduduk.create');
+        Route::post('/store', [UserDataPendudukController::class, 'store'])->name('user.datapenduduk.store');
+        Route::get('/edit/{no_kk}', [UserDataPendudukController::class, 'edit'])->name('user.datapenduduk.edit');
+        Route::put('/update/{no_kk}', [UserDataPendudukController::class, 'update'])->name('user.datapenduduk.update');
+        Route::delete('/destroy/{id}/{no_kk}/{dawis_id}/{kepala_rumah_tangga_id}', [UserDataPendudukController::class, 'destroy'])->name('user.datapenduduk.destroy');
+    });
+
+    Route::prefix('laporan')->group(function () {
+    
+        //Laporan
+        Route::get('/', [UserLaporanDawisDesaController::class, 'index'])->name('user.dasawisma.laporan.index');
+            
+        // Statistik Dawis Desa
+        Route::get('/statistikdesa', [UserLaporanDawisDesaController::class, 'statistikDesa'])->name('user.dasawisma.laporan.statistikdesa');
+        
+        //Pdf
+        Route::get('/download', [UserLaporanDawisDesaController::class, 'downloadPdf'])->name('user.dasawisma.laporan.laporanDawisPDF');
+    });
+});
+
+
+
+
 
 /*
 Route::prefix('admin/akumulasikecamatan')->group(function () {

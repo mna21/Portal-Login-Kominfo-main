@@ -8,59 +8,55 @@
         <div class="card shadow-lg h-100 py-2" style="border-radius: 15px;">
             <div class="card-body" style="border-radius: 15px;">
                 <div class="card-header py-3">
-                    <h5 class="font-weight-bold text-primary">AKUMULASI DASAWISMA KABUPATEN JEPARA</h5>
+                    <h6 class="font-weight-bold text-primary">AKUMULASI DASAWISMA</h6>
                 </div>
                 
-                <div class="table-responsive" style="overflow-x: auto; overflow-y: hidden;">
+                <div class="table-responsive" style="overflow-x: overflow-x: auto;">
                     <table class="table table-bordered table-striped table-hover shadow" style="border-radius: 15px;">
                         <thead class="bg-primary text-white">
                             <tr>
-                                <th rowspan="2" class="text-center align-middle">No</th>
-                                <th rowspan="2" class="align-middle text-center">Kecamatan</th>
-                                <th rowspan="2" class="align-middle text-center">JML KK</th>
-                                <!--<th rowspan="2" class="align-middle">Jumlah KK</th>-->
-                                <th colspan="9" class="highlight-yellow text-center align-middle">Jumlah Anggota Keluarga</th>
-                                <th colspan="7" class="highlight-orange text-center align-middle">Kriteria Rumah</th>
-                                <th colspan="3" class="highlight-green text-center align-middle">Sumber Air Keluarga</th>
-                                <th colspan="2" class="highlight-gray text-center align-middle">Makanan Pokok</th>
-                                <th colspan="4" class="align-middle text-center">Warga Mengikuti Kegiatan</th>
-                                <th rowspan="2" class="text-center align-middle">Aksi</th>
-                                <!--<th rowspan="2" class="text-center align-middle">Keterangan</th>  Menggunakan rowspan dan align center -->
+                                <th class="text-center align-middle sticky-header" rowspan="2">No</th>
+                                <th class="text-center align-middle sticky-header" rowspan="2">Kecamatan</th>
+                                <th class="text-center align-middle sticky-header" rowspan="2">JML KK</th>
+                                <th class="text-center align-middle sticky-header" colspan="11">Data Keluarga</th>
+                                <th class="text-center align-middle sticky-header" colspan="7">Kriteria Rumah</th>
+                                <th class="text-center align-middle sticky-header" colspan="3">Sumber Air Keluarga</th>
+                                <th class="text-center align-middle sticky-header" colspan="2">Makanan Pokok</th>
+                                <th class="text-center align-middle sticky-header" colspan="4">Warga Mengikuti Kegiatan</th>
+                                <th class="text-center align-middle sticky-header" rowspan="2">Aksi</th>
                             </tr>
                             <tr>
-                                <!--Anggota Keluarga-->
-                                <th>Total Balita</th>
-                                <th>PUS</th>
-                                <th>WUS</th>
-                                <th>Ibu Hamil</th>
-                                <th>Ibu Menyusui</th>
-                                <th>Lansia</th>
-                                <th>Buta Baca</th>
-                                <th>Buta Tulis</th>
-                                <th>Buta Hitung</th>
-            
-                                <!--Kriteria Rumah-->
-                                <th>Layak Huni</th>
-                                <th>Tidak Layak Huni</th>
-                                <th>Memiliki Tempat Pembuangan Sampah</th>
-                                <th>Saluran Limbah</th>
-                                <th>Memiliki Jamban Keluarga</th>
-                                <th>Jumlah Jamban Keluarga</th>
-                                <th>Memiliki Stiker P4K</th>
-            
-            
-                                <th>PDAM</th>
-                                <th>Sumur</th>
-                                <th>Sumber Air Keluarga Lain</th>
-            
-                                <th>Beras</th>
-                                <th>Non Beras</th>
-            
-                                <th>Akifitas UP2K</th>
-                                <th>Aktifitas UP2K Lain</th>
-                                <th>Tabungan</th>
-                                <th>Aktifitas Usaha Kesehatan Lingkungan</th>
-                                
+                                <th class="sticky-subheader">Jumlah Anggota Keluarga</th>
+                                <th class="sticky-subheader">Total Balita</th>
+                                <th class="sticky-subheader">Pasangan Usia Subur</th>
+                                <th class="sticky-subheader">Wanita Usia Subur</th>
+                                <th class="sticky-subheader">Ibu Hamil</th>
+                                <th class="sticky-subheader">Ibu Menyusui</th>
+                                <th class="sticky-subheader">Lansia</th>
+                                <th class="sticky-subheader">Buta Baca</th>
+                                <th class="sticky-subheader">Buta Tulis</th>
+                                <th class="sticky-subheader">Buta Hitung</th>
+                                <th class="sticky-subheader">Berkebutuhan Khusus</th>
+                                <!-- Kriteria Rumah -->
+                                <th class="sticky-subheader">Layak Huni</th>
+                                <th class="sticky-subheader">Tidak Layak Huni</th>
+                                <th class="sticky-subheader">Pembuangan Sampah</th>
+                                <th class="sticky-subheader">Saluran Limbah</th>
+                                <th class="sticky-subheader">Jamban Keluarga</th>
+                                <th class="sticky-subheader">Jumlah Jamban</th>
+                                <th class="sticky-subheader">Stiker P4K</th>
+                                <!-- Sumber Air -->
+                                <th class="sticky-subheader">PDAM</th>
+                                <th class="sticky-subheader">Sumur</th>
+                                <th class="sticky-subheader">Sumber Lain</th>
+                                <!-- Makanan Pokok -->
+                                <th class="sticky-subheader">Beras</th>
+                                <th class="sticky-subheader">Non Beras</th>
+                                <!-- Kegiatan -->
+                                <th class="sticky-subheader">Aktivitas UP2K</th>
+                                <th class="sticky-subheader">Aktivitas Lain</th>
+                                <th class="sticky-subheader">Tabungan</th>
+                                <th class="sticky-subheader">Kesehatan Lingkungan</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -70,6 +66,7 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $data->nama_kec }}</td>  <!-- Display nama_kec -->
                                 <td>{{ $data->jumlah_kepala_keluarga }}</td>
+                                <td>{{ $data->total_jumlah_anggota_keluarga }}</td>
                                 <td>{{ $data->total_balita }}</td>
                                 <td>{{ $data->total_pus }}</td>
                                 <td>{{ $data->total_wus }}</td>
@@ -79,6 +76,7 @@
                                 <td>{{ $data->total_buta_baca }}</td>
                                 <td>{{ $data->total_buta_tulis }}</td>
                                 <td>{{ $data->total_buta_hitung }}</td>
+                                <td>{{ $data->total_difabel }}</td>
 
                                 <td>{{ $data->jumlah_layak_huni }}</td>
                                 <td>{{ $data->jumlah_tidak_layak_huni }}</td>
@@ -124,6 +122,7 @@
                             <tr class="text-center align-middle">
                                 <th colspan="2" class="text-center align-middle">TOTAL</th>
                                 <td>{{ $totalKeseluruhan->jumlah_kepala_keluarga }}</td>
+                                <td>{{ $totalKeseluruhan->total_jumlah_anggota_keluarga}}</td>
                                 <td>{{ $totalKeseluruhan->total_balita }}</td>
                                 <td>{{ $totalKeseluruhan->total_pus }}</td>
                                 <td>{{ $totalKeseluruhan->total_wus }}</td>
@@ -133,6 +132,7 @@
                                 <td>{{ $totalKeseluruhan->total_buta_baca }}</td>
                                 <td>{{ $totalKeseluruhan->total_buta_tulis }}</td>
                                 <td>{{ $totalKeseluruhan->total_buta_hitung }}</td>
+                                <td>{{ $totalKeseluruhan->total_difabel}}</td>
 
                                 <td>{{ $totalKeseluruhan->jumlah_layak_huni }}</td>
                                 <td>{{ $totalKeseluruhan->jumlah_tidak_layak_huni }}</td>
@@ -167,13 +167,19 @@
                                         Statistik
                                     
                         </a>
+
+                        <a href="{{ route('admin.laporan.downloadPdf') }}" class="btn btn-success">
+                            <i class="fas fa-download fa-sm text-white-50"></i> Download PDF
+                        </a>
+
                     </div>
                 </div>
 
             </div>
         </div>
     </div>
-</div>    
+</div>
+
 
 @endsection
 

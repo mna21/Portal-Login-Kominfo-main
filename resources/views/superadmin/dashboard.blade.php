@@ -172,21 +172,6 @@
 <!-- <small class="text-muted">Menampilkan aktivitas penting atau perubahan status.</small> -->
 
 
-
-<div class="row">
-    <div class="col-xl-12 mb-4">
-        <div class="card shadow-lg h-100 py-2">
-            <div class="card-body">
-                <h5 class="card-title">Timeline Absensi</h5>
-                <div class="timeline" id="absensiTimeline">
-                    <!-- Absensi akan di-generate di sini -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <div class="row">
     <div class="col-xl-7 mb-4">
         <div class="card shadow-lg h-100 py-2">

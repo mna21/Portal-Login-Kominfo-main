@@ -38,6 +38,7 @@
                         </div>
                     </div>
                 </form>
+                
                 <!-- Cek jika ada data secara keseluruhan -->
                 @if ($dasawisma->isEmpty() && !request()->has('search'))
                 <div class="alert alert-warning text-center">
@@ -102,18 +103,16 @@
                                 <td>{{ $item->nama_kab }}</td>
                                 <td>{{ $item->nama_kec }}</td>
                                 <td>{{ $item->nama_kel }}</td>
-                
-                
-                
+            
                                 <td>
                                     <div class="btn-group" style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                        <a href="{{ route('admin.dasawisma.kepalaRumahTangga', $item->id) }}" class="btn btn-primary">KRT</a>
-                                        <a href="{{ route('admin.dasawisma.show', $item->id) }}" class="btn btn-info">Lihat</a>
-                                        <a href="{{ route('admin.dasawisma.edit', $item->id) }}" class="btn btn-warning">Edit</a>
+                                        <a href="{{ route('admin.dasawisma.kepalaRumahTangga', $item->id) }}" class="btn btn-primary btn-sm">KRT</a>
+                                        <a href="{{ route('admin.dasawisma.show', $item->id) }}" class="btn btn-info btn-sm">Lihat</a>
+                                        <a href="{{ route('admin.dasawisma.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
                                         <form action="{{ route('admin.dasawisma.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus Dasa Wisma ini?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Hapus</button>
+                                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                                         </form>
                                     </div>
                                 </td>

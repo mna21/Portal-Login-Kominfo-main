@@ -36,6 +36,7 @@
                         <th>Kecamatan</th>
                         <th>Kabupaten</th>
                         <th>Provinsi</th>
+                        <th>Jumlah Anggota Keluarga</th>
                         <th>Balita</th>
                         <th>PUS</th>
                         <th>WUS</th>
@@ -45,6 +46,7 @@
                         <th>Buta Baca</th>
                         <th>Buta Tulis</th>
                         <th>Buta Hitung</th>
+                        <th>Berkebutuhan Khusus</th>
                         <th>Makanan Pokok</th>
                         <th>Makanan Pokok Lain</th>
                         <th>Jamban Keluarga</th>
@@ -64,7 +66,7 @@
                 </thead>
                 <tbody>
                     @forelse ($dataKeluarga as $index => $keluarga)
-                    <tr>
+                    <tr class="text-center align-middle">
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $keluarga->no_kk }}</td>
                         <td>{{ $keluarga->nama_kepala_keluarga }}</td>
@@ -72,6 +74,7 @@
                         <td>{{ $keluarga->nama_kec ?? '-' }}</td>
                         <td>{{ $keluarga->nama_kab ?? '-' }}</td>
                         <td>{{ $keluarga->nama_prop ?? '-' }}</td>
+                        <td>{{ $keluarga->jumlah_anggota_keluarga ?? 0 }}</td>
                         <td>{{ $keluarga->balita }}</td>
                         <td>{{ $keluarga->pus ?? 0 }}</td>
                         <td>{{ $keluarga->wus ?? 0 }}</td>
@@ -81,6 +84,7 @@
                         <td>{{ $keluarga->buta_baca ?? 0 }}</td>
                         <td>{{ $keluarga->buta_tulis ?? 0 }}</td>
                         <td>{{ $keluarga->buta_hitung ?? 0 }}</td>
+                        <td>{{ $keluarga->difabel ?? 0 }}</td>
                         <td>{{ $keluarga->makanan_pokok === 1 ? 'Beras' : 'Bukan Beras' }}</td>
                         <td>{{ $keluarga->makanan_pokok_lain ?? '-' }}</td>
                         <td>{{ $keluarga->jamban_keluarga === 1 ? 'Iya' : 'Tidak' }}</td>
@@ -116,7 +120,7 @@
                                 </a>
 
 
-                                <a href="{{ route('data-keluarga.edit', [$keluarga->no_kk, $keluarga->dawis_id, $keluarga->kepala_rumah_tangga_id ?? 0]) }}" class="btn btn-warning btn-sm">
+                                <a href="{{ route('datakeluarga.edit', [$keluarga->no_kk, $keluarga->dawis_id, $keluarga->kepala_rumah_tangga_id ?? 0]) }}" class="btn btn-warning btn-sm">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
 

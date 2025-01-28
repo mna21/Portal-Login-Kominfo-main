@@ -24,6 +24,10 @@ class User extends Authenticatable
         'password',
         'role',
         'profile_photo',
+        'no_kel',
+        'no_kec',
+        'no_kab',
+        'no_prop',
     ];
 
     /**
@@ -44,6 +48,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // Relasi ke tabel dasawisma
+    public function dasawismas()
+    {
+        return $this->hasMany(Dawis::class, 'user_id');
+    }
 
     /**
      * Get the user's full name.
@@ -99,10 +109,12 @@ class User extends Authenticatable
     {
         return $this->hasRole('user');
     }
+
     public function hasRole($role)
     {
         return $this->role === $role;
     }
+    
     // app/Models/User.php
     public function getRoleNameAttribute()
     {
@@ -116,5 +128,62 @@ class User extends Authenticatable
     public function services()
     {
         return $this->hasMany(Service::class, 'author_id');
+    }
+
+
+
+    public function kel()
+    {
+        return $this->belongsTo(Kel::class, 'no_kel', 'no_kel');
+    }
+
+    public function kec()
+    {
+        return $this->belongsTo(Kec::class, 'no_kec', 'no_kec');
+    }
+
+    public function kab()
+    {
+        return $this->belongsTo(Kab::class, 'no_kab', 'no_kab');
+    }
+
+    public function prop()
+    {
+        return $this->belongsTo(Prop::class, 'no_prop', 'no_prop');
+    }
+    /**
+     * Relasi ke model Prop (Provinsi).
+     */
+    public function provinsi()
+    {
+        return $this->belongsTo(Prop::class, 'no_prop', 'no_prop');
+    }
+
+    /**
+     * Relasi ke model Kab (Kabupaten).
+     */
+    public function kabupaten()
+    {
+        return $this->belongsTo(Kab::class, 'no_kab', 'no_kab');
+    }
+
+    /**
+     * Relasi ke model Kec (Kecamatan).
+     */
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kec::class, 'no_kec', 'no_kec');
+    }
+
+    /**
+     * Relasi ke model Kel (Kelurahan).
+     */
+    public function kelurahan()
+    {
+        return $this->belongsTo(Kel::class, 'no_kel', 'no_kel');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

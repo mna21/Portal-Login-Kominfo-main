@@ -15,11 +15,11 @@ use Illuminate\Support\Facades\DB;
 
 class AdminDasaWismaController extends Controller
 {
+ 
     /**
      * Menampilkan halaman pemilihan Dasa Wisma oleh user.
      */
-
-
+    
     public function index()
     {
         $dasawisma = DB::table('dawis')

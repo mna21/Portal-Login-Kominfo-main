@@ -19,6 +19,7 @@ class DataKeluargaAkumulasi extends Model
     // Kolom-kolom yang bisa diisi
     protected $fillable = [
         'no_kk',
+        'jumlah_anggota_keluarga',
         'balita',
         'pus',
         'wus',
@@ -28,6 +29,7 @@ class DataKeluargaAkumulasi extends Model
         'buta_baca',
         'buta_tulis',
         'buta_hitung',
+        'difabel',
         'makanan_pokok',
         'makanan_pokok_lain',
         'jamban_keluarga',

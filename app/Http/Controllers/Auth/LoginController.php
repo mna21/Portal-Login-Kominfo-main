@@ -41,9 +41,13 @@ class LoginController extends Controller
 
         $credentials = $request->only('email', 'password');
 
+        //dd($credentials);
+
         // Attempt to log the user in
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
+
+            //dd($user);
 
             // Check if the user's role matches
             if ($user->role === 'superadmin') {

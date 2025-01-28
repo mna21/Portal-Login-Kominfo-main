@@ -5,27 +5,27 @@
 <div class="row">
     <div class="col-xl-12 mb-4">
         <div class="card shadow-lg h-100 py-2" style="border-radius: 15px;">
-            <div class="card-body" style="border-radius: 15px;">
 
-                <div class="card-header">
-                    <h6 class="m-0 font-weight-bold text-primary">Statistik Dasawisma Kabupaten Jepara</h6>
-                </div>
-                <!-- Card for Chart -->
-                <div class="chart-bar" style="position: relative; height: 500px;">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Statistik Dasawisma Kabupaten Jepara</h6>
+            </div>
+            <!-- Card for Chart -->
+            <div class="card-body">
+                <div class="chart-area" style="position: relative; height: 600px;">
                     <canvas id="statistikChart" width="400" height="200"></canvas>
                 </div>
-
-                <div class="card-footer text-center" style="border-radius: 15px;">
-                    <div class="btn-group" role="group">
-                        <a href="{{ route('admin.laporan.desa.index', ['no_prop' => $no_prop, 'no_kab' => $no_kab, 'no_kec' => $no_kec]) }}" class="btn btn-primary">
-                            <i class="fas fa-fw fa-table"></i>
-                            Table Data
-                        </a>
-                        
-                    </div>
-                </div>
-
             </div>
+
+            <div class="card-footer text-center" style="border-radius: 15px;">
+                <div class="btn-group" role="group">
+                    <a href="{{ route('admin.laporan.desa.index', ['no_prop' => $no_prop, 'no_kab' => $no_kab, 'no_kec' => $no_kec]) }}" class="btn btn-primary">
+                        <i class="fas fa-fw fa-table"></i>
+                        Table Data
+                    </a>
+                    
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -82,9 +82,11 @@
                 <div class="card-body" style="position: relative; height: 320px;">
                     <div class="chart-bar">
                         <canvas id="{{ $dataset['chartId'] }}"></canvas> 
+                        
                         <button class="btn btn-primary btn-sm mt-2" onclick="toggleTable('{{ $dataset['chartId'] }}')">Lihat Detail Tabel</button>
                     </div>
                 </div>
+                
             </div>
 
             <!-- Hidden Table -->

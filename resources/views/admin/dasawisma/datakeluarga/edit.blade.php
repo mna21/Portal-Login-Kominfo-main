@@ -91,7 +91,15 @@
         </select>
     </div>
 
-    <!-- Balita -->
+    <!-- Jumlah Anggota Keluarga -->
+    <div class="form-group">
+        <label for="jumlah_anggota_keluarga">Jumlah Anggota Keluarga</label>
+        <input type="number" name="jumlah_anggota_keluarga" class="form-control" value="{{ old('jumlah_anggota_keluarga', $keluarga->akumulasi->jumlah_anggota_keluarga ?? 0) }}" required>
+        @error('jumlah_anggota_keluarga')
+        <span class="text-danger">{{ $message }}</span>
+        @enderror
+    </div>
+
     <!-- Balita -->
     <div class="form-group">
         <label for="balita">Jumlah Balita</label>
@@ -144,6 +152,14 @@
         <label for="buta_hitung">Jumlah Buta Hitung</label>
         <input type="number" name="buta_hitung" class="form-control" value="{{ old('buta_hitung', $keluarga->akumulasi->buta_hitung) }}" required>
         @error('buta_hitung')
+        <span class="text-danger">{{ $message }}</span>
+        @enderror
+    </div>
+
+    <div class="form-group">
+        <label for="difabel">Berkebutuhan Khusus</label>
+        <input type="number" name="difabel" class="form-control" value="{{ old('difabel', $keluarga->akumulasi->difabel) }}" required>
+        @error('difabel')
         <span class="text-danger">{{ $message }}</span>
         @enderror
     </div>

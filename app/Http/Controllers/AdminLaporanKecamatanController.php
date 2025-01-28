@@ -10,6 +10,7 @@ use App\Models\DataKeluarga;
 use App\Models\DataKeluargaAkumulasi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf; // Periksa namespace yang tepat
 
 class AdminLaporanKecamatanController extends Controller
 {
@@ -24,6 +25,7 @@ class AdminLaporanKecamatanController extends Controller
             'kec.no_prop', // Tambahkan no_prop
             'kec.nama_kec', // Ambil nama kecamatan
             DB::raw('COUNT(dk.nama_kepala_keluarga) AS jumlah_kepala_keluarga'),
+            DB::raw('SUM(dka.jumlah_anggota_keluarga) AS total_jumlah_anggota_keluarga'),
             DB::raw('SUM(dka.balita) AS total_balita'),
             DB::raw('SUM(dka.pus) AS total_pus'),
             DB::raw('SUM(dka.wus) AS total_wus'),
@@ -33,6 +35,7 @@ class AdminLaporanKecamatanController extends Controller
             DB::raw('SUM(dka.buta_baca) AS total_buta_baca'),
             DB::raw('SUM(dka.buta_tulis) AS total_buta_tulis'),
             DB::raw('SUM(dka.buta_hitung) AS total_buta_hitung'),
+            DB::raw('SUM(dka.difabel) AS total_difabel'),
 
             DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 1 THEN 1 ELSE 0 END) AS jumlah_layak_huni'), // Layak huni
             DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 0 THEN 1 ELSE 0 END) AS jumlah_tidak_layak_huni'), // Tidak layak huni
@@ -66,6 +69,7 @@ class AdminLaporanKecamatanController extends Controller
             ->join('data_keluarga_akumulasi as dka', 'dk.no_kk', '=', 'dka.no_kk')
             ->select(
                 DB::raw('COUNT(dk.nama_kepala_keluarga) AS jumlah_kepala_keluarga'),
+                DB::raw('SUM(dka.jumlah_anggota_keluarga) AS total_jumlah_anggota_keluarga'),
                 DB::raw('SUM(dka.balita) AS total_balita'),
                 DB::raw('SUM(dka.pus) AS total_pus'),
                 DB::raw('SUM(dka.wus) AS total_wus'),
@@ -75,6 +79,7 @@ class AdminLaporanKecamatanController extends Controller
                 DB::raw('SUM(dka.buta_baca) AS total_buta_baca'),
                 DB::raw('SUM(dka.buta_tulis) AS total_buta_tulis'),
                 DB::raw('SUM(dka.buta_hitung) AS total_buta_hitung'),
+                DB::raw('SUM(dka.difabel) AS total_difabel'),
 
                 DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 1 THEN 1 ELSE 0 END) AS jumlah_layak_huni'), // Total Layak Huni
                 DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 0 THEN 1 ELSE 0 END) AS jumlah_tidak_layak_huni'), // Total Tidak Layak Huni
@@ -119,6 +124,7 @@ class AdminLaporanKecamatanController extends Controller
         ->join('data_keluarga_akumulasi as dka', 'dk.no_kk', '=', 'dka.no_kk')
         ->select(
             DB::raw('COUNT(dk.nama_kepala_keluarga) AS jumlah_kepala_keluarga'),
+            DB::raw('SUM(dka.jumlah_anggota_keluarga) AS total_jumlah_anggota_keluarga'),
             DB::raw('SUM(dka.balita) AS total_balita'),
             DB::raw('SUM(dka.pus) AS total_pus'),
             DB::raw('SUM(dka.wus) AS total_wus'),
@@ -128,6 +134,7 @@ class AdminLaporanKecamatanController extends Controller
             DB::raw('SUM(dka.buta_baca) AS total_buta_baca'),
             DB::raw('SUM(dka.buta_tulis) AS total_buta_tulis'),
             DB::raw('SUM(dka.buta_hitung) AS total_buta_hitung'),
+            DB::raw('SUM(dka.difabel) AS total_difabel'),
 
             DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 1 THEN 1 ELSE 0 END) AS jumlah_layak_huni'), // Total Layak Huni
             DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 0 THEN 1 ELSE 0 END) AS jumlah_tidak_layak_huni'), // Total Tidak Layak Huni
@@ -157,9 +164,10 @@ class AdminLaporanKecamatanController extends Controller
 
         // Menyiapkan data untuk chart
         $dataChartBarTotalAll = [
-            'labels' => ['Jumlah Kepala Keluarga', 'Balita', 'PUS', 'WUS', 'Ibu Hamil', 'Ibu Menyusui','Lansia', 'Buta Baca', 'Buta Tulis', 'Buta Hitung', 'Layak Huni', 'Tidak Layak Huni', 'Tempat Sampah Keluarga', 'Saluran Air Limbah', 'Jamban Keluarga', 'Jumlah Jamban Keluarga',  'Stiker P4K','PDAM', 'SUMUR', 'Sumber Air Lain', 'Makanan Pokok', 'Jumlah Makanan Pokok Lain', 'Aktivitas UP2K', 'Jumlah Aktivitas UP2K Lain', 'Memiliki Tabungan', 'Aktivitas Usaha Kesehatan Lingkungan'],
+            'labels' => ['Jumlah Kepala Keluarga', 'Jumlah Anggota Keluarga', 'Balita', 'Pasangan Usia Subur', 'Wanita Usia Subur', 'Ibu Hamil', 'Ibu Menyusui','Lansia', 'Buta Baca', 'Buta Tulis', 'Buta Hitung', 'Berkebutuhan Khusus', 'Layak Huni', 'Tidak Layak Huni', 'Tempat Sampah Keluarga', 'Saluran Air Limbah', 'Jamban Keluarga', 'Jumlah Jamban Keluarga',  'Stiker P4K','PDAM', 'Sumur', 'Sumber Air Lain', 'Makanan Pokok', 'Jumlah Makanan Pokok Lain', 'Aktivitas Usaha Peningkatan Pendapatan Keluarga', 'Jumlah Aktivitas UP2K Lain', 'Memiliki Tabungan', 'Aktivitas Usaha Kesehatan Lingkungan'],
             'data' => [
                 $totalKeseluruhan->jumlah_kepala_keluarga,
+                $totalKeseluruhan->total_jumlah_anggota_keluarga,
                 $totalKeseluruhan->total_balita,
                 $totalKeseluruhan->total_pus,
                 $totalKeseluruhan->total_wus,
@@ -169,6 +177,7 @@ class AdminLaporanKecamatanController extends Controller
                 $totalKeseluruhan->total_buta_baca,
                 $totalKeseluruhan->total_buta_tulis,
                 $totalKeseluruhan->total_buta_hitung,
+                $totalKeseluruhan->total_difabel,
 
                 $totalKeseluruhan->jumlah_layak_huni,
                 $totalKeseluruhan->jumlah_tidak_layak_huni,
@@ -203,6 +212,7 @@ class AdminLaporanKecamatanController extends Controller
                 'kec.no_prop', // Tambahkan no_prop
                 'kec.nama_kec', // Ambil nama kecamatan
                 DB::raw('COUNT(dk.nama_kepala_keluarga) AS jumlah_kepala_keluarga'),
+                DB::raw('SUM(dka.jumlah_anggota_keluarga) AS total_jumlah_anggota_keluarga'),
                 DB::raw('SUM(dka.balita) AS total_balita'),
                 DB::raw('SUM(dka.pus) AS total_pus'),
                 DB::raw('SUM(dka.wus) AS total_wus'),
@@ -212,6 +222,7 @@ class AdminLaporanKecamatanController extends Controller
                 DB::raw('SUM(dka.buta_baca) AS total_buta_baca'),
                 DB::raw('SUM(dka.buta_tulis) AS total_buta_tulis'),
                 DB::raw('SUM(dka.buta_hitung) AS total_buta_hitung'),
+                DB::raw('SUM(dka.difabel) AS total_difabel'),
 
                 DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 1 THEN 1 ELSE 0 END) AS jumlah_layak_huni'), // Layak huni
                 DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 0 THEN 1 ELSE 0 END) AS jumlah_tidak_layak_huni'), // Tidak layak huni
@@ -251,6 +262,15 @@ class AdminLaporanKecamatanController extends Controller
                         'chartId' => 'chartBarJumlahKepalaKeluarga'
                     ],
                     [
+                        'label' => 'Jumlah Anggota Keluarga',
+                        'data' => $dataPerKecamatan->pluck('total_jumlah_anggota_keluarga'),
+                        'backgroundColor' => '#4e73df', // Blue
+                        'hoverBackgroundColor' => '#2e59d9',
+                        'borderColor' => '#4e73df',
+                        'borderWidth' => 1,
+                        'chartId' => 'chartBarJumlahAnggotaKeluarga'
+                    ],
+                    [
                         'label' => 'Balita',
                         'data' => $dataPerKecamatan->pluck('total_balita'),
                         'backgroundColor' => '#ff6347', // Tomato Red
@@ -260,7 +280,7 @@ class AdminLaporanKecamatanController extends Controller
                         'chartId' => 'chartBarBalita'
                     ],
                     [
-                        'label' => 'PUS',
+                        'label' => 'Pasangan Usia Subur',
                         'data' => $dataPerKecamatan->pluck('total_pus'),
                         'backgroundColor' => '#28a745', // Green
                         'hoverBackgroundColor' => '#218838',
@@ -269,7 +289,7 @@ class AdminLaporanKecamatanController extends Controller
                         'chartId' => 'chartBarPus'
                     ],
                     [
-                        'label' => 'WUS',
+                        'label' => 'Wanita Usia Subur',
                         'data' => $dataPerKecamatan->pluck('total_wus'),
                         'backgroundColor' => '#17a2b8', // Teal
                         'hoverBackgroundColor' => '#138496',
@@ -330,6 +350,15 @@ class AdminLaporanKecamatanController extends Controller
                         'borderColor' => '#34495e',
                         'borderWidth' => 1,
                         'chartId' => 'chartBarButaHitung'
+                    ],
+                    [
+                        'label' => 'Berkebutuhan Khusus',
+                        'data' => $dataPerKecamatan->pluck('total_difabel'),
+                        'backgroundColor' => '#34495e', // Grey-Blue
+                        'hoverBackgroundColor' => '#2c3e50',
+                        'borderColor' => '#34495e',
+                        'borderWidth' => 1,
+                        'chartId' => 'chartBarDifabel'
                     ],
                     [
                         'label' => 'Rumah Layak Huni',
@@ -466,5 +495,93 @@ class AdminLaporanKecamatanController extends Controller
             'dataChartBarTotalAll' => $dataChartBarTotalAll,
             'dataChartBarPerItem' => $dataChartBarPerItem,
         ]);
+    }
+
+    public function downloadPdf()
+    {
+        $dataPerKecamatan = DB::table('kec as kec')
+            ->leftJoin('data_keluarga as dk', 'dk.no_kec', '=', 'kec.no_kec')
+            ->leftJoin('data_keluarga_akumulasi as dka', 'dk.no_kk', '=', 'dka.no_kk')
+            ->select(
+                'kec.no_kec',
+                'kec.no_kab',
+                'kec.no_prop',
+                'kec.nama_kec',
+                DB::raw('COUNT(dk.nama_kepala_keluarga) AS jumlah_kepala_keluarga'),
+                DB::raw('SUM(dka.jumlah_anggota_keluarga) AS total_jumlah_anggota_keluarga'),
+                DB::raw('SUM(dka.balita) AS total_balita'),
+                DB::raw('SUM(dka.pus) AS total_pus'),
+                DB::raw('SUM(dka.wus) AS total_wus'),
+                DB::raw('SUM(dka.ibu_hamil) AS total_ibu_hamil'),
+                DB::raw('SUM(dka.ibu_menyusui) AS total_ibu_menyusui'),
+                DB::raw('SUM(dka.lansia) AS total_lansia'),
+                DB::raw('SUM(dka.buta_baca) AS total_buta_baca'),
+                DB::raw('SUM(dka.buta_tulis) AS total_buta_tulis'),
+                DB::raw('SUM(dka.buta_hitung) AS total_buta_hitung'),
+                DB::raw('SUM(dka.difabel) AS total_difabel'),
+
+                DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 1 THEN 1 ELSE 0 END) AS jumlah_layak_huni'),
+                DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 0 THEN 1 ELSE 0 END) AS jumlah_tidak_layak_huni'),
+                DB::raw('SUM(dka.tempat_sampah_keluarga) AS total_tempat_sampah_keluarga'),
+                DB::raw('SUM(dka.saluran_air_limbah) AS total_saluran_air_limbah'),
+                DB::raw('SUM(dka.jamban_keluarga) AS total_jamban_keluarga'),
+                DB::raw('SUM(dka.jamban_keluarga_jumlah) AS total_jamban_keluarga_jumlah'),
+                DB::raw('SUM(dka.stiker_p4k) AS total_stiker_p4k'),
+                DB::raw('SUM(CASE WHEN dka.sumber_air_keluarga = 1 THEN 1 ELSE 0 END) AS jumlah_pdam'),
+                DB::raw('SUM(CASE WHEN dka.sumber_air_keluarga = 2 THEN 1 ELSE 0 END) AS jumlah_sumur'),
+                DB::raw('SUM(CASE WHEN dka.sumber_air_keluarga = 3 THEN 1 ELSE 0 END) AS jumlah_sumber_air_lain'),
+                DB::raw('SUM(CASE WHEN dka.makanan_pokok = 1 THEN 1 ELSE 0 END) AS jumlah_makanan_pokok'),
+                DB::raw('SUM(CASE WHEN dka.makanan_pokok = 2 THEN 1 ELSE 0 END) AS jumlah_makanan_pokok_lain'),
+                DB::raw('SUM(dka.aktivitas_up2k) AS total_aktivitas_up2k'),
+                DB::raw('COUNT(DISTINCT dka.aktivitas_up2k_lain) AS jumlah_aktivitas_up2k_lain'),
+                DB::raw('SUM(dka.memiliki_tabungan) AS total_memiliki_tabungan'),
+                DB::raw('SUM(dka.aktivitas_usaha_kesehatan_lingkungan) AS total_aktivitas_usaha_kesehatan_lingkungan')
+            )
+            ->groupBy('kec.no_kec', 'kec.no_kab', 'kec.no_prop', 'kec.nama_kec')
+            ->get();
+
+        $totalKeseluruhan = DB::table('data_keluarga as dk')
+            ->join('data_keluarga_akumulasi as dka', 'dk.no_kk', '=', 'dka.no_kk')
+            ->select(
+                DB::raw('COUNT(dk.nama_kepala_keluarga) AS jumlah_kepala_keluarga'),
+                DB::raw('SUM(dka.jumlah_anggota_keluarga) AS total_jumlah_anggota_keluarga'),
+                DB::raw('SUM(dka.balita) AS total_balita'),
+                DB::raw('SUM(dka.pus) AS total_pus'),
+                DB::raw('SUM(dka.wus) AS total_wus'),
+                DB::raw('SUM(dka.ibu_hamil) AS total_ibu_hamil'),
+                DB::raw('SUM(dka.ibu_menyusui) AS total_ibu_menyusui'),
+                DB::raw('SUM(dka.lansia) AS total_lansia'),
+                DB::raw('SUM(dka.buta_baca) AS total_buta_baca'),
+                DB::raw('SUM(dka.buta_tulis) AS total_buta_tulis'),
+                DB::raw('SUM(dka.buta_hitung) AS total_buta_hitung'),
+                DB::raw('SUM(dka.difabel) AS total_difabel'),
+
+                DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 1 THEN 1 ELSE 0 END) AS jumlah_layak_huni'),
+                DB::raw('SUM(CASE WHEN dka.kriteria_rumah = 0 THEN 1 ELSE 0 END) AS jumlah_tidak_layak_huni'),
+                DB::raw('SUM(dka.tempat_sampah_keluarga) AS total_tempat_sampah_keluarga'),
+                DB::raw('SUM(dka.saluran_air_limbah) AS total_saluran_air_limbah'),
+                DB::raw('SUM(dka.jamban_keluarga) AS total_jamban_keluarga'),
+                DB::raw('SUM(dka.jamban_keluarga_jumlah) AS total_jamban_keluarga_jumlah'),
+                DB::raw('SUM(dka.stiker_p4k) AS total_stiker_p4k'),
+                DB::raw('SUM(CASE WHEN dka.sumber_air_keluarga = 1 THEN 1 ELSE 0 END) AS jumlah_pdam'),
+                DB::raw('SUM(CASE WHEN dka.sumber_air_keluarga = 2 THEN 1 ELSE 0 END) AS jumlah_sumur'),
+                DB::raw('SUM(CASE WHEN dka.sumber_air_keluarga = 3 THEN 1 ELSE 0 END) AS jumlah_sumber_air_lain'),
+                DB::raw('SUM(CASE WHEN dka.makanan_pokok = 1 THEN 1 ELSE 0 END) AS jumlah_makanan_pokok'),
+                DB::raw('SUM(CASE WHEN dka.makanan_pokok = 2 THEN 1 ELSE 0 END) AS jumlah_makanan_pokok_lain'),
+                DB::raw('SUM(dka.aktivitas_up2k) AS total_aktivitas_up2k'),
+                DB::raw('COUNT(DISTINCT dka.aktivitas_up2k_lain) AS jumlah_aktivitas_up2k_lain'),
+                DB::raw('SUM(dka.memiliki_tabungan) AS total_memiliki_tabungan'),
+                DB::raw('SUM(dka.aktivitas_usaha_kesehatan_lingkungan) AS total_aktivitas_usaha_kesehatan_lingkungan')
+            )
+            ->first();
+
+            $pdf = PDF::loadView('admin.laporan.laporanKecPDF', [
+                'dataPerKecamatan' => $dataPerKecamatan,
+                'totalKeseluruhan' => $totalKeseluruhan
+            ])
+
+            ->setPaper('A4', 'landscape'); // Set paper orientation to landscape
+
+        return $pdf->download('laporan_kecamatan.pdf');
     }
 }
