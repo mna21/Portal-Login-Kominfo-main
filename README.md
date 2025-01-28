@@ -119,4 +119,10 @@ Proyek ini dibuat dengan dukungan oleh **Diskominfo Kabupaten Jepara**. Semua ha
     email : doni@gmail.com
     password : doni12345
 
+    email : pkkjebol12@gmail.com
+    password : jebol12345
+
+    email : buaran2010@gmail.com
+    password : buaran12345
+
 `untuk user bisa registrasi sendiri tetapi untuk admin dan superadmin silahkan login dengan email dan juga password yang tertera`
